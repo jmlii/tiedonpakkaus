@@ -1,7 +1,13 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'application'
+plugins {
+    id 'java'
+    id 'application' 
+    id 'jacoco'
+    id 'checkstyle'
+}
 
+checkstyle {
+    toolVersion '8.6'; 
+}
 
 mainClassName = 'tiedonpakkaus.Main'
 
@@ -13,11 +19,22 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+run {
+    standardInput = System.in
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true
         html.enabled = true
     }
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'tiedonpakkaus.Main'
+    }
+}
+
 
 check.dependsOn jacocoTestReport
