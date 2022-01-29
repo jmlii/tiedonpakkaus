@@ -8,3 +8,4 @@ Projekti on Helsingin yliopiston tietojenkäsittelytieteen kandiohjelman tietora
 
 ## Viikkoraportit
 - [viikko 1](/dokumentaatio/viikkoraportti1.md)
+- [viikko 2](/dokumentaatio/viikkoraportti2.md)
