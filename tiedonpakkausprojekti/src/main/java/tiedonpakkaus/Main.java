@@ -1,52 +1,50 @@
 package tiedonpakkaus;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import tiedonpakkaus.domain.LZW;
+import java.io.IOException;
+import tiedonpakkaus.domain.LZWCompressor;
+import tiedonpakkaus.domain.LZWDecompressor;
 
 public class Main {
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         
-        LZW lzw = new LZW();
-        Scanner inputScanner = new Scanner(System.in);
+        // Scanner inputScanner = new Scanner(System.in);
         
         System.out.println("***** Tekstitiedoston pakkaus ja purku *****");
         
         /* Tiedoston osoitteen kysely: 
         System.out.println("Anna pakattavan tiedoston osoite:");
         
-        String fileAddress = inputScanner.nextLine();
-        File file = new File(fileAddress);
-      
-        try {
-            List<Integer> compressedIntList = lzw.encode(file);
-            System.out.println(compressedIntList);
-        } catch (FileNotFoundException e) {
-            System.out.println("Tiedostoa ei löydy, tarkista osoite");
-        }
+        String pathToCompress = inputScanner.nextLine();
         */
         
 
-        String fileAddress = "files/f.txt";
-        File file = new File(fileAddress);
-      
-        List<Integer> compressedIntList = new ArrayList<>();
+        String pathToCompress = "files/f.txt";
+        String pathToCompressedFile = "files/file_compressed.bin";
+        String pathToDecompress = "files/file_compressed.bin";
+        String pathToDecompressedFile = "files/file_decompressed.txt";
+        
+        LZWCompressor lzwC = new LZWCompressor();
+        LZWDecompressor lzwD = new LZWDecompressor();
+        
+        String path = "";
         
         try {
-            compressedIntList = lzw.encode(file);
-            System.out.println(compressedIntList);
-        } catch (FileNotFoundException e) {
+            path = lzwC.compress(pathToCompress, pathToCompressedFile);
+            System.out.println("Pakattu tiedosto tallennettu osoitteeseen " + path);            
+        } catch (IOException ex) {
             System.out.println("Tiedostoa ei löydy, tarkista osoite");
         }
-        String bitsAsString = lzw.codesToBits(compressedIntList);
-        System.out.println(bitsAsString);
-    
+        
+        try {
+            path = lzwD.decompress(pathToDecompress, pathToDecompressedFile);
+            System.out.println("Purettu tiedosto tallennettu osoitteeseen " + path);
+        } catch (IOException ex) {
+            System.out.println("Purettavaa tiedostoa ei löydy, tarkista osoite");
+        }
+        
     }    
 }

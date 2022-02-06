@@ -1,10 +1,5 @@
 package tiedonpakkaus.domain;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,33 +7,25 @@ import org.junit.Test;
 
 public class LZWTest {
     LZW lzw;
-    File file = null;
+    String testString;
 
     @Before
     public void setUp() {
-        String pathToTestFile = "testfile.txt";
-        try {
-            FileWriter writer = new FileWriter(pathToTestFile);
-            writer.write("Testikirjoitus testitiedostoon testausta varten.");
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Could not write a testfile.");
-        }
-        file = new File(pathToTestFile);
+        testString = "Testikirjoitus testausta varten.";
         lzw = new LZW();
     }
-
-    @Test
-    public void encodedListFirstCharHasCorrectIntValue() throws FileNotFoundException {
-        int tCapital = 84;
-        int firstCharFromFile = lzw.encode(file).get(1);
-        assertEquals(tCapital, firstCharFromFile);
-    }
-
     
-    @After
-    public void tearDown() {
-        file.delete();
+    @Test
+    public void encodeReturnsByteArrayWithCorrectLength() {
+        byte[] bytes = lzw.encode(testString);
+        assertEquals(34, bytes.length);        
+    }
+    
+    @Test
+    public void decodeReturnsSameTextAsOriginalFile() {
+        byte[] bytes = lzw.encode(testString);
+        String decoded = lzw.decode(bytes);
+        assertEquals(decoded, testString);
     }
     
 }
