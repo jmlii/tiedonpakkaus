@@ -2,37 +2,50 @@ package tiedonpakkaus.domain;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Palveluluokka LZW-algoritmin mukaiselle tiedoston pakkaamiselle.
+ * Palveluluokka tiedoston pakkaamiselle.
  */
-public class LZWCompressor {
+public class Compressor {
     
     /**
      * Lukee tiedoston ja pakkaa sen tekstin pienemmäksi tiedostoksi.
+     * @param compressor käyttäjän valitsema pakkausalgoritmi
      * @param pathToCompress käyttäjän osoittaman pakattavan tiedoston osoite
      * @param pathToCompressedFile käyttäjän antama osoite pakatulle tiedostolle
      * @return pakatun tiedoston osoite
+     * @throws java.io.IOException jos tiedostoa ei löydy tai siihen ei päästä käsiksi
      */
-    public String compress(String pathToCompress, String pathToCompressedFile) throws IOException  {
-       
-        File inputFile = new File(pathToCompress);
+    public String compress(String compressor, String pathToCompress, String pathToCompressedFile) throws IOException  {
         LZW lzw = new LZW();
+        Huffman h = new Huffman();
         
+        // Haetaan tiedosto ja luetaan sen sisältö merkkijonoksi
+        File inputFile = new File(pathToCompress);       
         String text = readFile(inputFile);
 
+        // Tarkistetaan, että tiedostossa oli tekstisisältöä,
+        // ja ilmoitetaan käyttäjälle, jos tiedosto oli tyhjä
         if (text.isEmpty()) {
             return "null (pakattavaksi annettu tiedosto on tyhjä, pakkausta ei suoritettu)";
         }
 
-        byte[] bytes = lzw.encode(text);
+        // Pakataan tiedoston sisältö
+        byte[] bytes;
+        if (compressor.equals("LZW")) { 
+            bytes = lzw.encode(text);
+        } else if (compressor.equals("Huffman")) {
+            bytes = h.encode(text);
+        } else {
+            throw new IllegalArgumentException("Haluttua pakkausmenetelmää ei tunnistettu.");
+        }
         
         String encodedFileName = pathToCompressedFile;
         
+        // Pakatun tiedon tallennus tiedostoksi käyttäjän ilmoittamaan paikkaan
         String compressed = bytesToFile(bytes, encodedFileName);
         return compressed;
     }

@@ -11,10 +11,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LZWDecompressorTest {
+public class DecompressorTest {
    
-    LZWDecompressor lzwD;
-    LZWCompressor lzwC;
+    Decompressor lzwD;
+    Compressor lzwC;
     File testfile = null;
     File emptyTestfile = null;
     File compressedTestfile = null;
@@ -24,6 +24,7 @@ public class LZWDecompressorTest {
     String pathToCompressedTestFile = "";
     String pathToDecompressedTestFile = "";
     String testString = "";
+    String decompressorAlgorithm = "";
 
     @Before
     public void setUp() throws IOException {
@@ -32,6 +33,7 @@ public class LZWDecompressorTest {
         pathToCompressedTestFile = "testfileCompressed.bin";
         pathToDecompressedTestFile = "testfileDecompressed.txt";
         testString = "Testikirjoitus testausta varten.";
+        decompressorAlgorithm = "LZW";
         try {
             FileWriter writer = new FileWriter(pathToTestFile);
             writer.write(testString);
@@ -50,29 +52,29 @@ public class LZWDecompressorTest {
         testfile = new File(pathToTestFile);
         emptyTestfile = new File(pathToEmptyTestFile);
         
-        lzwD = new LZWDecompressor();
-        lzwC = new LZWCompressor();
-        lzwC.compress(pathToTestFile, pathToCompressedTestFile);
+        lzwD = new Decompressor();
+        lzwC = new Compressor();
+        lzwC.compress(decompressorAlgorithm, pathToTestFile, pathToCompressedTestFile);
         compressedTestfile = new File(pathToCompressedTestFile);
     }
     
     @Test
     public void LZWDecompressorCreatesADecompressedFile() throws IOException {
-        String pathToDecompressed = lzwD.decompress(pathToCompressedTestFile, pathToDecompressedTestFile);
+        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, pathToCompressedTestFile, pathToDecompressedTestFile);
         decompressedTestfile = new File(pathToDecompressed);
         assertTrue(decompressedTestfile.exists());
     }
     
     @Test
     public void noDecompressionIfFileIsEmpty() throws IOException {
-        String pathToDecompressed = lzwD.decompress(pathToEmptyTestFile, pathToDecompressedTestFile);
+        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, pathToEmptyTestFile, pathToDecompressedTestFile);
         decompressedTestfile = new File(pathToDecompressed);
         assertTrue(!decompressedTestfile.exists());
     }
     
     @Test
     public void LZWDecompressorReturnsCorrectTextInFile() throws IOException {
-        String pathToDecompressed = lzwD.decompress(pathToCompressedTestFile, pathToDecompressedTestFile);
+        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, pathToCompressedTestFile, pathToDecompressedTestFile);
         decompressedTestfile = new File(pathToDecompressed);
 
         BufferedReader br = new BufferedReader(new FileReader(decompressedTestfile));

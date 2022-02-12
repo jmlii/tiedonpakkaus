@@ -12,7 +12,7 @@ import java.util.Map;
 public class LZW {
        
     /**
-     * Muuttaa tekstin tavutaulukoksi.
+     * Muuttaa tekstin LZW-algoritmilla tavutaulukoksi (pakkaa tekstin).
      * @param text pakattava teksti
      * @return pakattu teksti tavutaulukkona
      */
@@ -25,7 +25,7 @@ public class LZW {
     }
     
     /**
-     * Muuttaa tavutaulukon tekstiksi
+     * Muuttaa tavutaulukon LZW-algoritmilla tekstiksi (purkaa pakatun tiedon tekstiksi).
      * @param bytes purettava tavutaulukko
      * @return purettu tavutaulukko tekstinä
      */
@@ -40,19 +40,19 @@ public class LZW {
     
     /**
      * Muuntaa tekstin kokonaislukuja sisältäväksi koodilistaksi.
-     * @param text muunnettava merkkijono
+     * @param text muunnettava merkkijono (pakattava teksti)
      * @return pakattu teksti kokonaislukuja sisältävänä listana
      */
     private List<Integer> createCodes(String text) {
        
         // Luodaan sanakirjan pohja: kirjainten Unicode-arvot
-        int dictionarySize = 383;
+        int dictionarySize = 256;
         Map<String,Integer> dictionary = new HashMap<>();
         for (int i = 0; i < dictionarySize; i++) {
             dictionary.put("" + (char)i, i);
         }
  
-        // tekstin läpikäynti
+        // Tekstin läpikäynti
         String s = "";
         List<Integer> codes = new ArrayList<>();
         for (char c : text.toCharArray()) {
@@ -70,9 +70,9 @@ public class LZW {
             // otetaan se uudeksi tarkasteltavaksi merkkijonoksi
             if (dictionary.containsKey(sc)) {
                 s = sc;
+            // Muulloin lisätään tarkasteltava merkkijono koodilistalle 
+            // ja uusi yhdistetty merkkijono sanakirjaan            
             } else {
-                // Lisätään tarkasteltava merkkijono koodilistalle 
-                // ja uusi yhdistetty merkkijono sanakirjaan
                 codes.add(dictionary.get(s));
                 dictionary.put(sc, dictionarySize++);
                 s = "" + c;
@@ -216,15 +216,20 @@ public class LZW {
      * @return kokonaislukuja sisältävä koodilista
      */
     private List<Integer> bitsToCodes(String bits) {
+        
         List<Integer> codes = new ArrayList<>();
         
-        int len = Integer.parseInt(bits.substring(0, 8), 2);
+        // Haetaan bittimerkkijonon alusta tieto 
+        // numerokoodeiksi muunnettavien bittijonojen pituudesta
+        int len = Integer.parseInt(bits.substring(0, 8), 2);        
         
-        bits = bits.substring(8);
         String bitString = "";
         int code;
         
-        for (int start = 0; start < bits.length(); start += len) {
+        // Jaetaan bittijono oikean pituisiin osiin,
+        // muutetaan bitit kokonaisluvuiksi ja tallennetaan koodilistalle;
+        // hypätään yli ensimmäiset bitit, joissa on tieto bittijonojen pituudesta
+        for (int start = 8; start < bits.length(); start += len) {
             if ((start + len) >= bits.length()) {
                 bitString += bits.substring(start, bits.length());
             } else {
@@ -245,31 +250,41 @@ public class LZW {
      */
     private String codeListToText(List<Integer> codes) {
         // Luodaan sanakirjan pohja: kirjainten Unicode-arvot
-        int dictionarySize = 383;
+        int dictionarySize = 256;
         Map<Integer, String> dictionary = new HashMap<>();
         for (int i = 0; i < dictionarySize; i++) {
             dictionary.put(i, "" + (char)i);
         }
         
+        // Koodilistan läpikäynti
+        // Muunnetaan koodilistan kokonaisluvut merkeiksi tai merkkijonoiksi,
+        // ja yhdistetään ne tekstiksi.
         int c = codes.remove(0);
         String s = "" + (char) c;
-        
         String text = "" + s;
         for (int code : codes) {
-            String entry;
+            String str;
+            // Varmistetaan, että koodi on jo sanakirjassa.
+            // Jos sanakirjasta löytyy luvulle merkki tai merkkijono, otetaan se talteen
             if (dictionary.containsKey(code)) {
-                entry = dictionary.get(code);
-            } else if (code == dictionarySize) {
-                entry = s + s.charAt(0);
+                str = dictionary.get(code);
+            } else if (code >= dictionarySize) {
+                str = s + s.charAt(0);
+            // Varaudutaan siihen, että tiedostossa on joku koodiluku, jota ei saada muunnettua tekstiksi
+            // ja ilmoitetaan käyttäjälle epäonnistumisesta
             } else {
                 throw new IllegalArgumentException("Bad compression in code number " + code);
             }
             
-            text += entry;
+            // Lisätään tekstiin edellä talteen otetut merkit
+            text += str;
             
-            dictionary.put(dictionarySize++, s + entry.charAt(0));
-            
-            s = entry;
+            // Yhdistetään edellisen kierroksen merkkijonon loppuun tämän kierroksen ensimmäinen merkki
+            // ja lisätään uusi merkkijono sanakirjaan
+            dictionary.put(dictionarySize++, s + str.charAt(0));
+             
+            // Otetaan seuraavalle kierrokselle talteen edellä tarkastellut merkit
+            s = str;
         }
         
         return text;

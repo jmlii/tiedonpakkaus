@@ -8,21 +8,23 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LZWCompressorTest {
+public class CompressorTest {
     
-    LZWCompressor lzwC;
+    Compressor compressor;
     File testfile = null;
     File emptyTestfile = null;
     File compressedTestfile = null;
     String pathToTestFile = "";
     String pathToEmptyTestFile = "";
     String pathToCompressedTestFile = "";
+    String compressorAlgorithm = "";
 
     @Before
     public void setUp() {
         pathToTestFile = "testfile.txt";
         pathToEmptyTestFile = "emptytestfile.txt";
         pathToCompressedTestFile = "testfileCompressed.bin";
+        compressorAlgorithm = "LZW";
         try {
             FileWriter writer = new FileWriter(pathToTestFile);
             writer.write("Testikirjoitus testausta varten.");
@@ -39,26 +41,26 @@ public class LZWCompressorTest {
         }
         testfile = new File(pathToTestFile);
         emptyTestfile = new File(pathToEmptyTestFile);
-        lzwC = new LZWCompressor();
+        compressor = new Compressor();
     }
 
     @Test
     public void LZWCompressorCreatesACompressedFile() throws IOException {
-        String pathToCompressed = lzwC.compress(pathToTestFile, pathToCompressedTestFile);
+        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToTestFile, pathToCompressedTestFile);
         compressedTestfile = new File(pathToCompressed);
         assertTrue(compressedTestfile.exists());
     }
     
     @Test
     public void compressedFileIsNotEmptyIfOriginalIsNotEmpty() throws IOException {
-        String pathToCompressed = lzwC.compress(pathToTestFile, pathToCompressedTestFile);
+        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToTestFile, pathToCompressedTestFile);
         compressedTestfile = new File(pathToCompressed);
         assertTrue(compressedTestfile.length() != 0);
     }
     
     @Test 
     public void noCompressionIfOriginalIsEmpty() throws IOException {
-        String pathToCompressed = lzwC.compress(pathToEmptyTestFile, pathToCompressedTestFile);
+        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToEmptyTestFile, pathToCompressedTestFile);
         compressedTestfile = new File(pathToCompressed);
         assertTrue(!compressedTestfile.exists());
     }

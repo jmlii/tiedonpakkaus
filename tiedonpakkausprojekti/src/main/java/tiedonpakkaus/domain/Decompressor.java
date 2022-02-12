@@ -8,9 +8,9 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Palveluluokka LZW-algoritmin mukaiselle tiedoston purkamiselle.
+ * Palveluluokka pakatun tiedoston purkamiselle.
  */
-public class LZWDecompressor {
+public class Decompressor {
      
     /**
      * Purkaa pakatun tiedoston tekstitiedostoksi
@@ -19,16 +19,24 @@ public class LZWDecompressor {
      * @return puretun tiedoston osoite
      * @throws IOException 
      */
-    public String decompress(String pathToDecompress, String pathToDecompressedFile) 
+    public String decompress(String decompressor, String pathToDecompress, String pathToDecompressedFile) 
             throws IOException {
-        LZW lzw = new LZW();  
+        LZW lzw = new LZW(); 
+        Huffman h = new Huffman();
 
         byte[] bytes = Files.readAllBytes(Paths.get(pathToDecompress));
         if (bytes.length == 0) {
             return "null (purettavaksi annettu tiedosto on tyhjä, purkua ei suoritettu)";
         }
         
-        String text = lzw.decode(bytes);
+        String text;
+        if (decompressor.equals("LZW")) { 
+            text = lzw.decode(bytes);
+        } else if (decompressor.equals("Huffman")) {
+            text = h.decode(bytes);
+        } else {
+            throw new IllegalArgumentException("Haluttua purkumenetelmää ei tunnistettu.");
+        }
         
         String decompressed = textToFile(text, pathToDecompressedFile);
         return decompressed;
