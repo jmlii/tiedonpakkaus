@@ -9,10 +9,16 @@ public class UserInterface {
     
     private final Scanner scanner;
     
+    /**
+     * Käyttöliittymän konstruktori.
+     */
     public UserInterface() {   
         scanner = new Scanner(System.in);
     }
     
+    /**
+     * Ohjelman käynnistys.
+     */
     public void start() {
         
         System.out.println("***** Tekstitiedoston pakkaus ja purku *****");      
@@ -44,7 +50,8 @@ public class UserInterface {
         }
         
         try {
-            path = decompressor.decompress(decompressorAlgorithm, pathToDecompress, pathToDecompressedFile);
+            path = decompressor.decompress(decompressorAlgorithm, pathToDecompress, 
+                    pathToDecompressedFile);
             System.out.println("Purettu tiedosto tallennettu osoitteeseen " + path);
         } catch (IOException ex) {
             System.out.println("Purettavaa tiedostoa ei löydy, tarkista osoite");

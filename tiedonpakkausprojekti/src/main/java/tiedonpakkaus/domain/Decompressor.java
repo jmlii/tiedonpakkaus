@@ -19,8 +19,8 @@ public class Decompressor {
      * @return puretun tiedoston osoite
      * @throws IOException 
      */
-    public String decompress(String decompressor, String pathToDecompress, String pathToDecompressedFile) 
-            throws IOException {
+    public String decompress(String decompressor, String pathToDecompress, 
+            String pathToDecompressedFile) throws IOException {
         LZW lzw = new LZW(); 
         Huffman h = new Huffman();
 

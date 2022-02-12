@@ -26,7 +26,8 @@ public class Huffman {
     }
     
     /**
-     * Muuttaa tavutaulukon Huffmanin koodin algoritmilla tekstiksi (purkaa pakatun tiedon tekstiksi).
+     * Muuttaa tavutaulukon Huffmanin koodin algoritmilla tekstiksi 
+     * (purkaa pakatun tiedon tekstiksi).
      * @param bytes purettava tavutaulukko
      * @return purettu tavutaulukko tekstinä
      */
@@ -43,15 +44,15 @@ public class Huffman {
     private Map<Character, Integer> getFrequencies(String text) {
        
         // Käydään läpi teksti ja siinä esiintyvien merkkien esiintymiskerrat
-       Map<Character, Integer> freq = new HashMap<>();
-       for (char c : text.toCharArray()) {
-           if (!freq.containsKey(c)) {
-               freq.put(c, 1);
-           } else {
-               freq.replace(c, freq.get(c) + 1);
-           }
-       }
-       return freq;
+        Map<Character, Integer> freq = new HashMap<>();
+        for (char c : text.toCharArray()) {
+            if (!freq.containsKey(c)) {
+                freq.put(c, 1);
+            } else {
+                freq.replace(c, freq.get(c) + 1);
+            }
+        }
+        return freq;
     }
     
     /**

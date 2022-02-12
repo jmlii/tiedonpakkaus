@@ -270,8 +270,8 @@ public class LZW {
                 str = dictionary.get(code);
             } else if (code >= dictionarySize) {
                 str = s + s.charAt(0);
-            // Varaudutaan siihen, että tiedostossa on joku koodiluku, jota ei saada muunnettua tekstiksi
-            // ja ilmoitetaan käyttäjälle epäonnistumisesta
+            // Varaudutaan siihen, että tiedostossa on joku koodiluku, jota ei saada muunnettua 
+            // tekstiksi, ja ilmoitetaan käyttäjälle epäonnistumisesta
             } else {
                 throw new IllegalArgumentException("Bad compression in code number " + code);
             }
@@ -279,7 +279,7 @@ public class LZW {
             // Lisätään tekstiin edellä talteen otetut merkit
             text += str;
             
-            // Yhdistetään edellisen kierroksen merkkijonon loppuun tämän kierroksen ensimmäinen merkki
+            // Yhdistetään edellisen kierroksen merkkeihin tämän kierroksen ensimmäinen merkki
             // ja lisätään uusi merkkijono sanakirjaan
             dictionary.put(dictionarySize++, s + str.charAt(0));
              

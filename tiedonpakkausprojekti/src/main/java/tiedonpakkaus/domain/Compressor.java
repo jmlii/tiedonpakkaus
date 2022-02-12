@@ -19,7 +19,8 @@ public class Compressor {
      * @return pakatun tiedoston osoite
      * @throws java.io.IOException jos tiedostoa ei löydy tai siihen ei päästä käsiksi
      */
-    public String compress(String compressor, String pathToCompress, String pathToCompressedFile) throws IOException  {
+    public String compress(String compressor, String pathToCompress, String pathToCompressedFile) 
+            throws IOException  {
         LZW lzw = new LZW();
         Huffman h = new Huffman();
         
