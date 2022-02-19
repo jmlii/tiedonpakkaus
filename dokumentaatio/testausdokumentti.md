@@ -5,10 +5,10 @@ Ohjelmaa testataan sekä yksikkötestein että suorituskyvyn osalta.
 ## Yksikkötestit
 Yksikkötestit on tehty JUnit-testeinä luokka- ja metodikohtaisesti. Yksikkötesteissä luodaan ensin testejä varten tarvittavat testitiedostot tai muut rakenteet, joita testeissä käsitellään. Testauskattavuutta seurataan JaCoCon kattavuusraportin avulla. 
 
-Testikattavuus viikon 4 päätteeksi:
-![testikattavuusraportti viikko 4](/dokumentaatio/kuvat/kuva_testauskattavuus_viikko4.png)
+Testikattavuus viikon 5 päätteeksi:
+![testikattavuusraportti viikko 5](/dokumentaatio/kuvat/kuva_testauskattavuus_viikko5.png)
 
-Kattavuutta heikentää se, että Huffmanin koodin algoritmi on vasta alussa, eikä sen toiminnallisuutta ole vielä saatu testattua järkevällä tavalla.
+Huffmanin koodauksen purkavia metodeja ei vielä ole toteutettu eikä niitä siten voida vielä testata, mikä heikentää Decompressor-luokan testikattavuutta.
 
 ## Suorituskyky
 
