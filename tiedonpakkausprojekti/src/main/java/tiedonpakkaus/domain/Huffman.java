@@ -95,7 +95,7 @@ public class Huffman {
      */
     private String treeToBits(HuffmanNode tree, String treeBits) {
                 
-        if  (tree.left == null && tree.right == null) {
+        if  (tree.left == null) {
             // Merkitään lapsetonta solmua bitillä 1,
             // ja liitetään sen perään solmun merkki 8-bittisessä muodossa            
             String charBits = String.format("%8s", Integer.toBinaryString(tree.ch))
@@ -127,7 +127,7 @@ public class Huffman {
         // Kun saavutaan solmuun, jolla ei ole lapsia, tallennetaan hakemistoon 
         // solmun merkki ja siihen johtava polku;
         // polku on merkin koodi pakatussa tekstissä
-        if (tree.left == null && tree.right == null) {
+        if (tree.left == null) {
             
             // Jos puussa on vain yksi merkki, eli code-merkkijono on tyhjä kun saavutaan 
             // lapsettomaan solmuun, tallennetaan hakemistoon tämän merkin koodiksi "0"
