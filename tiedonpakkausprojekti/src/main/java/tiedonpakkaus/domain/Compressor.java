@@ -63,10 +63,7 @@ public class Compressor {
         while ((line = br.readLine()) != null) {
             textFromFile += line + "\n";
         } 
-        // poistetaan lopusta tiedostoa lukiessa tuleva ylimääräinen rivinvaihto
-        if (!textFromFile.isEmpty()) {
-            textFromFile = textFromFile.substring(0, textFromFile.length() - 1);
-        }
+
         return textFromFile;
     }
     

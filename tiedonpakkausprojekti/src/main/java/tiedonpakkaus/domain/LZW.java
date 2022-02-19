@@ -80,13 +80,7 @@ public class LZW {
         }
  
         // Lisätään viimeinen merkkijono koodilistalle
-        if (!s.equals("")) {
-            codes.add(dictionary.get(s));
-        }
-        
-        // Talletetaan tieto listan suurimmasta arvosta listan loppuun
-        int maxCode = Collections.max(codes);
-        codes.add(maxCode);
+        codes.add(dictionary.get(s));
 
         return codes;
     }
@@ -97,13 +91,13 @@ public class LZW {
      * @return pakattu teksti bittijonoesityksenä
      */
     private String codesToBits(List<Integer> codes) {
-        
-        // Haetaan listan lopusta tieto listan suurimmasta arvosta, poistetaan tämä tieto listalta, 
-        // ja asetetaan sen perusteella yksittäistä lukua kuvaavan bittijonon bittien määrä
-        int maxCode = codes.remove(codes.size() - 1);
+                
+        // Haetaan tieto listan suurimmasta arvosta, ja asetetaan sen bittijonoesityksen pituuden
+        // perusteella yksittäistä lukua kuvaavan bittijonon bittien määrä
+        int maxCode = Collections.max(codes);
         String maxCodeBinary = Integer.toBinaryString(maxCode);
         int binaryLength = maxCodeBinary.length();
-        
+
         // Bitit merkkijonona
         String bits = "";
         
@@ -119,7 +113,7 @@ public class LZW {
             intToBits = String.format(strFormat, Integer.toBinaryString(code)).replaceAll(" ", "0");
             bits = bits + intToBits;            
         }
-        
+                
         return bits;
     }
     
@@ -134,49 +128,49 @@ public class LZW {
         // ja poistetaan nämä bitit merkkijonosta
         final int binaryLength = Integer.parseInt(bits.substring(0, 8), 2);
         bits = bits.substring(8);
-
-        // Märitetään taulukon koko siten, että siinä on varmasti tila 
+        
+        // Lasketaan, kuinka monta ylimääräistä nollaa bittimerkkijonon alkuun lisätään, 
+        // jotta bittien määrä on jaollinen 8:lla eli yhden tavun bittien määrällä,
+        // ja muodostetaan nollista merkkijono
+        int extraZeros = 8 - bits.length() % 8;
+        String zeros = new String(new char[extraZeros]).replace("\0", "0");
+        
+        // Yhdistetään ylimääräiset nollat bittimerkkijonon alkuun
+        bits = zeros + bits;
+      
+        // Märitetään taulukon koko siten, että siinä on tila 
         // kaikille biteistä muodostettaville tavuille 
         // ja kaksi ylimääräistä paikkaa biteistä tallennettaville lisätiedoille
-        byte[] bytes = new byte[bits.length() / 8 + 3];
+        byte[] bytes = new byte[bits.length() / 8 + 2];
         
-        int len = 8;        
-        String byteString = "";
-        int b; 
+        // Taulukon ensimmäiseen indeksiin bittijonon alkuun lisättyjen nollien lukumäärä
+        bytes[0] = (byte) extraZeros;
         
-        // taulukon kaksi ensimmäistä paikkaa lisätiedoille, 
-        // alkuperäisen tiedoston sisältö alkaa indeksistä 2
-        int i = 2; 
-        int addedZerosInLastByte = 0;
-               
+        // Taulukon toiseen indeksiin alkuperäisten bittijonojen pituus
+        bytes[1] = (byte) binaryLength;
+        
+        // Luodaan yhdistetyn merkkijonon tavuiksi käsittelyssä tarvittavat apumuuttujat
+        int len = 8;    // Tavuun tulevien bittien määrä
+        String byteString = "";    // Tavuun tulevista biteistä tehtävä merkkijono
+        int b;    // Tavua kuvaava kokonaisluku
+        int i = 2;    // Yhdistetty bittijono tallennetaan alkaen indeksistä 2
+        
         for (int start = 0; start < bits.length(); start += len) {
-            if ((start + len) >= bits.length()) {
-                byteString += bits.substring(start, bits.length());
-                // jos viimeiseen indeksiin jää alle 8 bittiä, lisätään perään nollia 
-                // ja tallennetaan tieto ylimääräisten nollien lukumäärästä
-                if (byteString.length() < 8) {
-                    addedZerosInLastByte = 8 - byteString.length();
-                    for (int j = byteString.length(); j < 8; j++) {
-                        byteString += "0";
-                    }
-                }
-            } else {
-                byteString += bits.substring(start, start + len);
-            }
             
+            // Erotellaan yhdistetystä bittijonosta 8 bittiä kerrallaan
+            byteString += bits.substring(start, start + len);
+
+            // Muutetaan bittijono sitä vastaavaksi luvuksi
             b = Integer.parseInt(byteString, 2);
 
+            // Muutetaan bittijonosta muutettu luku tavuksi ja tallennetaan taulukkoon
             bytes[i] = (byte) b;
-                        
+            
+            // Tyhjennetään tavumerkkijono seuraavaa kierrosta varten
+            // ja kasvatetaan taulukon tallennuspaikkaa merkitsevää indeksiä
             byteString = "";
             i++;
         }
-
-        // taulukon ensimmäiseen indeksiin viimeisen tavun ylimääräisten nollien lukumäärä
-        bytes[0] = (byte) addedZerosInLastByte;
-
-        // taulukon toiseen indeksiin alkuperäisten bittijonojen pituus
-        bytes[1] = (byte) binaryLength;
 
         return bytes;
     }
@@ -188,25 +182,33 @@ public class LZW {
      */    
     private String bytesToBits(byte[] bytes) {
 
-        // taulukon ensimmäisessä indeksissä tieto lopusta poistettavien nollien määrästä
-        int zerosToRemove = bytes[0];
-        
+     
         int byteAsInt;
         String byteAsString;
         String bits = "";
         
-        // käydään läpi tavutaulukko toisesta indeksistä alkaen 
-        // pidetään mukana tieto myöhemmin numerokoodeiksi muunnettavien bittijonojen pituudesta
-        for (int i = 1; i < bytes.length; i++) {
+        // käydään läpi tavutaulukko kolmannesta indeksistä alkaen 
+        for (int i = 2; i < bytes.length; i++) {
             byteAsInt = bytes[i];
             byteAsString = String.format("%8s", Integer.toBinaryString(byteAsInt & 0xFF))
                     .replace(" ", "0");
             bits = bits + byteAsString;
         }
-        
-        // poistetaan lopusta ylimääräiset nollat
-        bits = bits.substring(0, bits.length() - zerosToRemove);
 
+        // taulukon ensimmäisessä indeksissä tieto alusta poistettavien nollien määrästä
+        int zerosToRemove = bytes[0];
+        
+        // Taulukon toisessa indeksissä tieto myöhemmin numerokoodeiksi muunnettavien 
+        // bittijonojen pituudesta
+        int binaryLength = bytes[1];
+
+        // poistetaan alusta ylimääräiset nollat
+        bits = bits.substring(zerosToRemove);
+
+        // alkuun bittijonojen pituus bittimerkkijonona
+        bits = String.format("%8s", Integer.toBinaryString(binaryLength))
+                .replaceAll(" ", "0") + bits;
+        
         return bits;
     }
     
@@ -268,8 +270,9 @@ public class LZW {
             // Jos sanakirjasta löytyy luvulle merkki tai merkkijono, otetaan se talteen
             if (dictionary.containsKey(code)) {
                 str = dictionary.get(code);
+            // Jos koodi ei ole sanakirjassa, korvataan sen tilde-merkillä '~'
             } else if (code >= dictionarySize) {
-                str = s + s.charAt(0);
+                str = "~";
             // Varaudutaan siihen, että tiedostossa on joku koodiluku, jota ei saada muunnettua 
             // tekstiksi, ja ilmoitetaan käyttäjälle epäonnistumisesta
             } else {
@@ -281,7 +284,8 @@ public class LZW {
             
             // Yhdistetään edellisen kierroksen merkkeihin tämän kierroksen ensimmäinen merkki
             // ja lisätään uusi merkkijono sanakirjaan
-            dictionary.put(dictionarySize++, s + str.charAt(0));
+            dictionary.put(dictionarySize, s + str.charAt(0));
+            dictionarySize++;
              
             // Otetaan seuraavalle kierrokselle talteen edellä tarkastellut merkit
             s = str;

@@ -6,18 +6,18 @@ package tiedonpakkaus.domain;
  */
 public class HuffmanNode implements Comparable<HuffmanNode> {
     
-    char c;
+    char ch = 0;
     int frequency;
     HuffmanNode left; 
     HuffmanNode right;
         
     /**
      * Yksittäisen merkin solmu, jolla ei ole lapsia.
-     * @param c merkki
+     * @param ch merkki
      * @param frequency merkin esiintymiskertojen lukumäärä
      */
-    public HuffmanNode(char c, int frequency) {
-        this.c = c;
+    public HuffmanNode(char ch, int frequency) {
+        this.ch = ch;
         this.frequency = frequency;
     }
     

@@ -1,13 +1,14 @@
 package tiedonpakkaus.domain;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,22 +60,25 @@ public class DecompressorTest {
     }
     
     @Test
-    public void LZWDecompressorCreatesADecompressedFile() throws IOException {
-        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, pathToCompressedTestFile, pathToDecompressedTestFile);
+    public void lzwDecompressorCreatesDecompressedFile() throws IOException {
+        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, 
+                pathToCompressedTestFile, pathToDecompressedTestFile);
         decompressedTestfile = new File(pathToDecompressed);
         assertTrue(decompressedTestfile.exists());
     }
     
     @Test
-    public void noDecompressionIfFileIsEmpty() throws IOException {
-        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, pathToEmptyTestFile, pathToDecompressedTestFile);
+    public void lzwNoDecompressionIfFileIsEmpty() throws IOException {
+        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, 
+                pathToEmptyTestFile, pathToDecompressedTestFile);
         decompressedTestfile = new File(pathToDecompressed);
         assertTrue(!decompressedTestfile.exists());
     }
     
     @Test
-    public void LZWDecompressorReturnsCorrectTextInFile() throws IOException {
-        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, pathToCompressedTestFile, pathToDecompressedTestFile);
+    public void lzwDecompressorReturnsCorrectTextInFile() throws IOException {
+        String pathToDecompressed = lzwD.decompress(decompressorAlgorithm, 
+                pathToCompressedTestFile, pathToDecompressedTestFile);
         decompressedTestfile = new File(pathToDecompressed);
 
         BufferedReader br = new BufferedReader(new FileReader(decompressedTestfile));
@@ -83,7 +87,8 @@ public class DecompressorTest {
         while ((line = br.readLine()) != null) {
             textFromDecompressedFile += line + "\n";
         } 
-        textFromDecompressedFile = textFromDecompressedFile.substring(0, textFromDecompressedFile.length()-1);
+        textFromDecompressedFile = textFromDecompressedFile.substring(0, 
+                textFromDecompressedFile.length() - 1);
 
         assertEquals(testString, textFromDecompressedFile);
     }
