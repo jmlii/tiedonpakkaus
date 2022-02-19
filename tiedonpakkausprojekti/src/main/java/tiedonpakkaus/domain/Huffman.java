@@ -1,4 +1,3 @@
-
 package tiedonpakkaus.domain;
 
 import java.util.HashMap;
@@ -18,8 +17,8 @@ public class Huffman {
     public byte[] encode(String text) {
         Map<Character, Integer> freq = countFrequencies(text);
         HuffmanNode huffmanTree = createTree(freq);
-        Map<Character, String> charCodes = createCharCodes(huffmanTree, "", new HashMap<>());
         String treeBits = treeToBits(huffmanTree, "");
+        Map<Character, String> charCodes = createCharCodes(huffmanTree, "", new HashMap<>());
         String textBits = textToBits(text, charCodes);
         byte[] bytes = bitsToBytes(treeBits, textBits);
         
@@ -89,9 +88,39 @@ public class Huffman {
         return tree.poll();
     }
     
-    
-    
+    /**
+     * Muodostaa Huffmanin puusta bittiesityksen, joka tallennetaan pakatun tekstin yhteyteen
+     * @param tree Huffmanin puun juurisolmu 
+     * @return puu bittimerkkijonona
+     */
+    private String treeToBits(HuffmanNode tree, String treeBits) {
+                
+        if  (tree.left == null && tree.right == null) {
+            // Merkitään lapsetonta solmua bitillä 1,
+            // ja liitetään sen perään solmun merkki 8-bittisessä muodossa            
+            String charBits = String.format("%8s", Integer.toBinaryString(tree.ch))
+                    .replaceAll(" ", "0");
+            treeBits = treeBits + "1" + charBits;
+
+        } else {
+            // Merkitään vanhempi-solmua bitillä 0;
+            treeBits += "0";
+            
+            // Käydään puu läpi rekursiivisesti
+            treeBits = treeToBits(tree.left, treeBits);     
+            treeBits = treeToBits(tree.right, treeBits);
+        }
         
+        return treeBits;
+    }
+    
+    /**
+     * Muodostaa hakemiston merkeille ja niistä käytettäville koodeille.
+     * @param tree Huffmanin puun juuri (aloitussolmu)
+     * @param code yksittäiseen merkkiä kuvaava koodimerkkijono 
+     * @param charCodes hakemisto merkeille ja niistä käytettäville koodeille
+     * @return hakemisto merkeille ja niistä käytettäville koodeille
+     */    
     private Map<Character, String> createCharCodes(HuffmanNode tree, String code, 
             HashMap<Character, String> charCodes) {       
         
@@ -117,8 +146,12 @@ public class Huffman {
         return charCodes;
     }
     
-        
-    
+    /**
+     * Muuttaa pakattavan tekstin bittimerkkijonoksi.
+     * @param text pakattava teksti
+     * @param charCodes hakemisto merkeille ja niistä käytettäville koodeille
+     * @return teksti koodattuna bittimerkkijonona
+     */    
     private String textToBits(String text, Map<Character, String> charCodes) {
          
         String textBits = "";
@@ -139,8 +172,12 @@ public class Huffman {
         return textBits;
     }
     
-    
-    
+    /**
+     * Muuttaa puun ja tekstin bittimerkkijonot tavutaulukoksi
+     * @param treeBits Huffmanin puun bittimerkkijonoesitys
+     * @param textBits bittimerkkijonoksi koodattu alkuperäinen teksti
+     * @return puu ja teksti tavutaulukoksi pakattuna
+     */
     private byte[] bitsToBytes(String treeBits, String textBits) {
      
         // Haetaan tieto Huffmanin puun bittijonon pituudesta 
@@ -196,33 +233,4 @@ public class Huffman {
         return bytes;
     }
     
-    
-    /**
-     * Muodostaa Huffmanin puusta bittiesityksen, joka tallennetaan pakatun tekstin yhteyteen
-     * @param tree Huffmanin puun juurisolmu 
-     * @return puu bittimerkkijonona
-     */
-    private String treeToBits(HuffmanNode tree, String treeBits) {
-                
-        if  (tree.left == null && tree.right == null) {
-            // Merkitään lapsetonta solmua bitillä 1,
-            // ja liitetään sen perään solmun merkki 8-bittisessä muodossa            
-            String charBits = String.format("%8s", Integer.toBinaryString(tree.ch))
-                    .replaceAll(" ", "0");
-            treeBits = treeBits + "1" + charBits;
-            
-        
-        } else {
-            // Merkitään vanhempi-solmua bitillä 0;
-            treeBits += "0";
-            
-            // Käydään puu läpi rekursiivisesti
-            treeBits = treeToBits(tree.left, treeBits);
-                       
-            treeBits = treeToBits(tree.right, treeBits);
-        }
-        
-        return treeBits;
-    }
-
 }
