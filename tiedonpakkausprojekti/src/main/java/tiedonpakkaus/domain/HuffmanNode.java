@@ -32,7 +32,7 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
         this.left = left;
         this.right = right;
     }
-    
+
     /**
      * Vertailee kahden solmun esiintymistiheyksiä
      * @param otherNode vertailun toinen solmu

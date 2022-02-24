@@ -74,7 +74,8 @@ public class LZW {
             // ja uusi yhdistetty merkkijono sanakirjaan            
             } else {
                 codes.add(dictionary.get(s));
-                dictionary.put(sc, dictionarySize++);
+                dictionary.put(sc, dictionarySize);
+                dictionarySize += 1;
                 s = "" + c;
             }
         }
@@ -99,10 +100,11 @@ public class LZW {
         int binaryLength = maxCodeBinary.length();
 
         // Bitit merkkijonona
-        String bits = "";
+        StringBuilder bits = new StringBuilder();
         
         // Merkkijonon ensimmäisiin 8 merkkiin tieto bittijonojen pituuksista bittteinä
-        bits += String.format("%8s", Integer.toBinaryString(binaryLength)).replaceAll(" ", "0");
+        bits.append(String.format("%8s", Integer.toBinaryString(binaryLength))
+                .replaceAll(" ", "0"));
         
         // Muutetaan listalla olevat luvut samanpituisiksi bittijonoiksi 
         // ja yhdistetään merkkijonoksi
@@ -111,10 +113,10 @@ public class LZW {
         
         for (int code : codes) {
             intToBits = String.format(strFormat, Integer.toBinaryString(code)).replaceAll(" ", "0");
-            bits = bits + intToBits;            
+            bits.append(intToBits);        
         }
                 
-        return bits;
+        return bits.toString();
     }
     
     /**
@@ -176,40 +178,40 @@ public class LZW {
     }
     
     /**
-     * Muuttaa tavutaulukon bittimerkkijonoksi
+     * Muuttaa tavutaulukon bittimerkkijonoksi.
      * @param bytes tavutaulukko
      * @return tavutaulukko bittimerkkijonona
      */    
     private String bytesToBits(byte[] bytes) {
-
-     
-        int byteAsInt;
-        String byteAsString;
-        String bits = "";
         
-        // käydään läpi tavutaulukko kolmannesta indeksistä alkaen 
-        for (int i = 2; i < bytes.length; i++) {
-            byteAsInt = bytes[i];
-            byteAsString = String.format("%8s", Integer.toBinaryString(byteAsInt & 0xFF))
-                    .replace(" ", "0");
-            bits = bits + byteAsString;
-        }
-
-        // taulukon ensimmäisessä indeksissä tieto alusta poistettavien nollien määrästä
-        int zerosToRemove = bytes[0];
+        StringBuilder bits = new StringBuilder();
         
         // Taulukon toisessa indeksissä tieto myöhemmin numerokoodeiksi muunnettavien 
         // bittijonojen pituudesta
         int binaryLength = bytes[1];
-
-        // poistetaan alusta ylimääräiset nollat
-        bits = bits.substring(zerosToRemove);
-
-        // alkuun bittijonojen pituus bittimerkkijonona
-        bits = String.format("%8s", Integer.toBinaryString(binaryLength))
-                .replaceAll(" ", "0") + bits;
         
-        return bits;
+        // Merkkijonon alkuun bittijonojen pituus bittimerkkijonona
+        bits.append(String.format("%8s", Integer.toBinaryString(binaryLength))
+                .replaceAll(" ", "0"));
+        
+        // Taulukon toisen indeksin alussa on pakatessa lisätyt ylimääräiset nollat (max 7 kpl)
+        // Lisätään ensin kaikki tavun bitit merkkijonoon
+        bits.append(String.format("%8s", Integer.toBinaryString(bytes[2] & 0xFF))
+                .replace(" ", "0"));
+        
+        // Haetaan taulukon ensimmäisestä indeksistä tieto alusta poistettavien nollien määrästä
+        int zerosToRemove = bytes[0];
+        
+        // poistetaan ylimääräiset nollat bittijonojen pituuden ilmoittavien 8 bitin jälkeen
+        bits.delete(8, 8 + zerosToRemove);
+
+        // käydään läpi loput tavutaulukosta neljännestä indeksistä alkaen 
+        for (int i = 3; i < bytes.length; i++) {
+            bits.append(String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF))
+                    .replace(" ", "0"));
+        }
+        
+        return bits.toString();
     }
     
     /**
@@ -225,7 +227,6 @@ public class LZW {
         // numerokoodeiksi muunnettavien bittijonojen pituudesta
         int len = Integer.parseInt(bits.substring(0, 8), 2);        
         
-        String bitString = "";
         int code;
         
         // Jaetaan bittijono oikean pituisiin osiin,
@@ -233,15 +234,13 @@ public class LZW {
         // hypätään yli ensimmäiset bitit, joissa on tieto bittijonojen pituudesta
         for (int start = 8; start < bits.length(); start += len) {
             if ((start + len) >= bits.length()) {
-                bitString += bits.substring(start, bits.length());
+                code = Integer.parseInt(bits.substring(start, bits.length()), 2);
             } else {
-                bitString += bits.substring(start, start + len);
+                code = Integer.parseInt(bits.substring(start, start + len), 2);
             }
-            code = Integer.parseInt(bitString, 2);
             codes.add(code);
-            bitString = "";
         }
-        
+               
         return codes;
     }
     
@@ -251,6 +250,7 @@ public class LZW {
      * @return teksti, jonka tulisi vastata alkuperäisen pakatun tiedoston sisältöä
      */
     private String codeListToText(List<Integer> codes) {
+        
         // Luodaan sanakirjan pohja: kirjainten Unicode-arvot
         int dictionarySize = 256;
         Map<Integer, String> dictionary = new HashMap<>();
@@ -263,35 +263,37 @@ public class LZW {
         // ja yhdistetään ne tekstiksi.
         int c = codes.remove(0);
         String s = "" + (char) c;
-        String text = "" + s;
+        StringBuilder text = new StringBuilder(s);
+
         for (int code : codes) {
-            String str;
+
+            String newText;
             // Varmistetaan, että koodi on jo sanakirjassa.
             // Jos sanakirjasta löytyy luvulle merkki tai merkkijono, otetaan se talteen
             if (dictionary.containsKey(code)) {
-                str = dictionary.get(code);
+                newText = dictionary.get(code);
+            // Poikkeustapaus, jossa koodi on sanakirjaan vasta seuraavaksi merkittävä merkkijono
+            } else if (code == dictionarySize) {
+                newText = s + s.charAt(0);
             // Jos koodi ei ole sanakirjassa, korvataan sen tilde-merkillä '~'
-            } else if (code >= dictionarySize) {
-                str = "~";
-            // Varaudutaan siihen, että tiedostossa on joku koodiluku, jota ei saada muunnettua 
-            // tekstiksi, ja ilmoitetaan käyttäjälle epäonnistumisesta
             } else {
-                throw new IllegalArgumentException("Bad compression in code number " + code);
+                System.out.println("Purkaessa kohdattiin merkki, jota ei tunnistettu "
+                        + "Merkki korvataan puretussa tiedostossa merkillä '~'.");
+                newText = "~";
             }
-            
             // Lisätään tekstiin edellä talteen otetut merkit
-            text += str;
+            text.append(newText);
             
             // Yhdistetään edellisen kierroksen merkkeihin tämän kierroksen ensimmäinen merkki
             // ja lisätään uusi merkkijono sanakirjaan
-            dictionary.put(dictionarySize, s + str.charAt(0));
+            dictionary.put(dictionarySize, s + newText.charAt(0));
             dictionarySize++;
-             
+            
             // Otetaan seuraavalle kierrokselle talteen edellä tarkastellut merkit
-            s = str;
+            s = newText;
         }
-        
-        return text;
+   
+        return text.toString();
     }
     
 }

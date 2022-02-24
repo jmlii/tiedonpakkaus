@@ -27,12 +27,20 @@ public class Decompressor {
         byte[] bytes = Files.readAllBytes(Paths.get(pathToDecompress));
         if (bytes.length == 0) {
             return "null (purettavaksi annettu tiedosto on tyhjä, purkua ei suoritettu)";
-        }
+        } 
         
         String text;
         if (decompressor.equals("LZW")) { 
+            if (bytes.length < 4) {
+                return "null (purettavaksi annettu tiedosto on vääränmuotoinen, "
+                        + "purkua ei suoritettu)";
+            }
             text = lzw.decode(bytes);
         } else if (decompressor.equals("Huffman")) {
+            if (bytes.length < 5) {
+                return "null (purettavaksi annettu tiedosto on vääränmuotoinen, "
+                        + "purkua ei suoritettu)";
+            } 
             text = h.decode(bytes);
         } else {
             throw new IllegalArgumentException("Haluttua purkumenetelmää ei tunnistettu.");

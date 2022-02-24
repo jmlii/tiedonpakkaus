@@ -3,121 +3,93 @@ package tiedonpakkaus.domain;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Before;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CompressorTest {
     
-    Compressor compressor;
-    File testfile = null;
-    File emptyTestfile = null;
-    File compressedTestfile = null;
-    String pathToTestFile = "";
-    String pathToEmptyTestFile = "";
-    String pathToCompressedTestFile = "";
-    String compressorAlgorithm = "";
+    File lzwCompressedTestFile = new File("LzwCompressedTestFile");
+    File huffmanCompressedTestFile = new File("HuffmanCompressedTestFile");
+    File lzwCompressedEmptyTestFile = new File("LzwCompressedEmptyTestFile");
+    File huffmanCompressedEmptyTestFile = new File("HuffmanCompressedEmptyTestFile");
+    
+    /**
+     * Luo Compressor-luokan testien käyttämät tiedostot ja suorittaa pakkaamiset
+     * @throws IOException
+     */
+    @BeforeClass
+    public static void setUp() throws IOException {
 
-    @Before
-    public void setUp() {
-        pathToTestFile = "testfile.txt";
-        pathToEmptyTestFile = "emptytestfile.txt";
-        pathToCompressedTestFile = "testfileCompressed.bin";
-        try {
-            FileWriter writer = new FileWriter(pathToTestFile);
-            writer.write("Testikirjoitus testausta varten.");
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Could not write a testfile.");
-        }
-        try {
-            FileWriter writer = new FileWriter(pathToEmptyTestFile);
-            writer.write("");
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Could not write a testfile.");
-        }
-        testfile = new File(pathToTestFile);
-        emptyTestfile = new File(pathToEmptyTestFile);
-        compressor = new Compressor();
+        FileWriter writerTest = new FileWriter("testfile.txt");
+        writerTest.write("Testikirjoitus testausta varten.");
+        writerTest.close();
+        FileWriter writerEmpty = new FileWriter("emptytestfile.txt");
+        writerEmpty.write("");
+        writerEmpty.close();
+        
+        Compressor compressor = new Compressor();       
+        compressor.compress("LZW", "testfile.txt", "LzwCompressedTestFile");
+        compressor.compress("LZW", "emptytestfile.txt", "LzwCompressedEmptyTestFile");
+        compressor.compress("Huffman", "testfile.txt", "HuffmanCompressedTestFile");
+        compressor.compress("Huffman", "emptytestfile.txt", "HuffmanCompressedEmptyTestFile");
+
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void exceptionThrownIfCompressorNotRecognized() throws IOException {
-        compressorAlgorithm = "NoCompressor";
+        Compressor nonCompressor = new Compressor();
         
-        // Luodaaan mock-tiedosto, jotta joka testin jälkeen tehtävä tiedoston poisto onnistuu
-        FileOutputStream writer = new FileOutputStream(pathToCompressedTestFile);
-        writer.write(1);
-        writer.close();
-        compressedTestfile = new File(pathToCompressedTestFile);
-        
-        // Virheilmoitukseen päättyvä kutsu
-        compressor.compress(compressorAlgorithm, pathToTestFile, pathToCompressedTestFile);
+        // Virheilmoitukseen päättyvä kutsu, jossa pakkaaja jota ei tunnisteta
+        nonCompressor.compress("NonCompressor", "testfile.txt", "NoCompressedTestFile");
     }
     
     @Test
-    public void lzwCompressorCreatesCompressedFile() throws IOException {
-        compressorAlgorithm = "LZW";
-        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToTestFile, 
-                pathToCompressedTestFile);
-        compressedTestfile = new File(pathToCompressed);
-        assertTrue(compressedTestfile.exists());
+    public void lzwCompressorCreatesCompressedFile() {
+        assertTrue(lzwCompressedTestFile.exists());
     }
     
     @Test
     public void huffmanCompressorCreatesCompressedFile() throws IOException {
-        compressorAlgorithm = "Huffman";
-        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToTestFile, 
-                pathToCompressedTestFile);
-        compressedTestfile = new File(pathToCompressed);
-        assertTrue(compressedTestfile.exists());
+        assertTrue(huffmanCompressedTestFile.exists());
     }
     
     @Test
     public void lzwCompressedFileIsNotEmptyIfOriginalIsNotEmpty() throws IOException {
-        compressorAlgorithm = "LZW";
-        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToTestFile, 
-                pathToCompressedTestFile);
-        compressedTestfile = new File(pathToCompressed);
-        assertTrue(compressedTestfile.length() != 0);
+        assertTrue(lzwCompressedTestFile.length() != 0);
     }
     
     @Test
     public void huffmanCompressedFileIsNotEmptyIfOriginalIsNotEmpty() throws IOException {
-        compressorAlgorithm = "Huffman";
-        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToTestFile, 
-                pathToCompressedTestFile);
-        compressedTestfile = new File(pathToCompressed);
-        assertTrue(compressedTestfile.length() != 0);       
+        assertTrue(huffmanCompressedTestFile.length() != 0);       
     }
     
     @Test 
     public void lzwNoCompressionIfOriginalIsEmpty() throws IOException {
-        compressorAlgorithm = "LZW";
-        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToEmptyTestFile, 
-                pathToCompressedTestFile);
-        compressedTestfile = new File(pathToCompressed);
-        assertTrue(!compressedTestfile.exists());
+        assertTrue(!lzwCompressedEmptyTestFile.exists());
     }
     
     @Test 
     public void huffmanNoCompressionIfOriginalIsEmpty() throws IOException {
-        compressorAlgorithm = "Huffman";
-        String pathToCompressed = compressor.compress(compressorAlgorithm, pathToEmptyTestFile, 
-                pathToCompressedTestFile);
-        compressedTestfile = new File(pathToCompressed);
-        assertTrue(!compressedTestfile.exists());
+        assertTrue(!huffmanCompressedEmptyTestFile.exists());
     }    
     
-    @After
-    public void tearDown() {
-        testfile.delete();
-        emptyTestfile.delete();
-        compressedTestfile.delete();
+    /**
+     * Poistaa testiluokan luomat tiedostot, jos ne on luotu
+     * @throws IOException
+     */
+    @AfterClass
+    public static void tearDown() throws IOException {
+        Files.deleteIfExists(Paths.get("testfile.txt"));
+        Files.deleteIfExists(Paths.get("emptytestfile.txt"));
+        Files.deleteIfExists(Paths.get("LzwCompressedTestFile"));
+        Files.deleteIfExists(Paths.get("LzwCompressedEmptyTestFile"));
+        Files.deleteIfExists(Paths.get("HuffmanCompressedTestFile"));
+        Files.deleteIfExists(Paths.get("HuffmanCompressedTestFile"));
     }
     
 }

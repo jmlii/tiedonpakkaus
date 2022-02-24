@@ -34,8 +34,8 @@ public class UserInterface {
         String pathToCompressedFile = "files/file_compressed.bin";
         String pathToDecompress = "files/file_compressed.bin";
         String pathToDecompressedFile = "files/file_decompressed.txt";
-        String compressorAlgorithm = "LZW";
-        String decompressorAlgorithm = "LZW";
+        String compressorAlgorithm = "Huffman";
+        String decompressorAlgorithm = "Huffman";
         
         Compressor compressor = new Compressor();
         Decompressor decompressor = new Decompressor();

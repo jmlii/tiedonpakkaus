@@ -10,11 +10,13 @@ public class LZWTest {
     LZW lzw;
     String testString;
     String testStringUnknownChar;
+    String testStringLineFeed;
 
     @Before
     public void setUp() {
         testString = "Testikirjoitus testausta varten.";
         testStringUnknownChar = "đ";
+        testStringLineFeed = "\n\n\n";
         lzw = new LZW();
     }
     
@@ -39,7 +41,7 @@ public class LZWTest {
     public void decodeReturnsSameTextAsOriginalFile() {
         byte[] bytes = lzw.encode(testString);
         String decoded = lzw.decode(bytes);
-        assertEquals(decoded, testString);
+        assertEquals(testString, decoded);
     }
     
     @Test
@@ -57,5 +59,11 @@ public class LZWTest {
         assertEquals("e~a~a", testStringUnrecognized);
     }
     
+    @Test 
+    public void decodeHandlesSituationWhereCodeIsNextToAddToDictionary() {
+        byte[] bytes = lzw.encode(testStringLineFeed);
+        String decoded = lzw.decode(bytes);
+        assertEquals(testStringLineFeed, decoded);
+    }
     
 }

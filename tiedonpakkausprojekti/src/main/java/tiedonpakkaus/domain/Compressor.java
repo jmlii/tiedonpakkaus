@@ -1,10 +1,13 @@
 package tiedonpakkaus.domain;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Palveluluokka tiedoston pakkaamiselle.
@@ -24,9 +27,9 @@ public class Compressor {
         LZW lzw = new LZW();
         Huffman h = new Huffman();
         
-        // Haetaan tiedosto ja luetaan sen sisältö merkkijonoksi
-        File inputFile = new File(pathToCompress);       
-        String text = readFile(inputFile);
+        
+        // Luetaan pakattavan tiedoston sisältö merkkijonoksi
+        String text = readFile(pathToCompress);
 
         // Tarkistetaan, että tiedostossa oli tekstisisältöä,
         // ja ilmoitetaan käyttäjälle, jos tiedosto oli tyhjä
@@ -56,15 +59,15 @@ public class Compressor {
      * @param file käyttäjän osoittama tiedosto
      * @return teksti merkkijonona
      */
-    private String readFile(File file) throws IOException {
+    private String readFile(String file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
-        String textFromFile = "";
+        StringBuilder textFromFile = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
-            textFromFile += line + "\n";
+            textFromFile.append(line).append("\n");
         } 
-
-        return textFromFile;
+        
+        return textFromFile.toString();
     }
     
     /**
@@ -75,16 +78,14 @@ public class Compressor {
      * @throws java.io.IOException
      */
     private String bytesToFile(byte[] bytes, String fileName) throws IOException {
-        FileOutputStream writer = null;
-        String name = fileName;
-           
-        writer = new FileOutputStream(name);
+        
+        BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(fileName));
         for (byte b : bytes) {
             writer.write(b);
         } 
         
         writer.close();
-        return name;
+        return fileName;
     }
 
 }
