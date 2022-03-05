@@ -1,5 +1,6 @@
 package tiedonpakkaus.domain;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -17,6 +18,7 @@ public class CompressorTest {
     File huffmanCompressedTestFile = new File("HuffmanCompressedTestFile");
     File lzwCompressedEmptyTestFile = new File("LzwCompressedEmptyTestFile");
     File huffmanCompressedEmptyTestFile = new File("HuffmanCompressedEmptyTestFile");
+    File noCompressedTestFile = new File("NoCompressedTestFile");
     
     /**
      * Luo Compressor-luokan testien käyttämät tiedostot ja suorittaa pakkaamiset
@@ -37,15 +39,14 @@ public class CompressorTest {
         compressor.compress("LZW", "emptytestfile.txt", "LzwCompressedEmptyTestFile");
         compressor.compress("Huffman", "testfile.txt", "HuffmanCompressedTestFile");
         compressor.compress("Huffman", "emptytestfile.txt", "HuffmanCompressedEmptyTestFile");
-
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void exceptionThrownIfCompressorNotRecognized() throws IOException {
+    @Test
+    public void noCompressionIfCompressorNotRecognized() throws IOException {
         Compressor nonCompressor = new Compressor();
-        
-        // Virheilmoitukseen päättyvä kutsu, jossa pakkaaja jota ei tunnisteta
-        nonCompressor.compress("NonCompressor", "testfile.txt", "NoCompressedTestFile");
+        String s = nonCompressor.compress("NonCompressor", "testfile.txt", "NoCompressedTestFile");
+        assertEquals("faulty", s);
+        assertTrue(!noCompressedTestFile.exists());
     }
     
     @Test
@@ -90,6 +91,7 @@ public class CompressorTest {
         Files.deleteIfExists(Paths.get("LzwCompressedEmptyTestFile"));
         Files.deleteIfExists(Paths.get("HuffmanCompressedTestFile"));
         Files.deleteIfExists(Paths.get("HuffmanCompressedTestFile"));
+        Files.deleteIfExists(Paths.get("NoCompressedTestFile"));
     }
     
 }

@@ -19,8 +19,9 @@ public class DecompressorTest {
     File lzwDecompressedTestFile = new File("LzwDecompressedTestFile");
     File huffmanDecompressedTestFile = new File("HuffmanDecompressedTestFile");
     File decompressedEmptyTestFile = new File("decompressedEmptyTestFile");
-    File decompressedThreeByteTestFile = new File("decompressedThreeByteTestFile");
-    File decompressedFourByteTestFile = new File("decompressedFourByteTestFile");
+    File lzwDecompressedFaultyTestFile = new File("lzwDecompressedFaultyTestFile");
+    File huffmanDecompressedFaultyTestFile = new File("huffmanDecompressedFaultyTestFile");
+    File noDecompressedTestFile = new File("noDecompressedTestFile");
     
     /**
      * Luo Decompressor-luokan testien käyttämät tiedostot ja suorittaa pakkaamiset ja purkamiset
@@ -35,13 +36,10 @@ public class DecompressorTest {
         FileWriter writerEmpty = new FileWriter("emptytestfile.txt");
         writerEmpty.write("");
         writerEmpty.close();
-        FileWriter writerFourBytes = new FileWriter("threebytetestfile.txt");
-        writerFourBytes.write("aaa");    
-        writerFourBytes.close();
-        FileWriter writerFiveBytes = new FileWriter("fourbytetestfile.txt");
-        writerFiveBytes.write("aaaa");    
-        writerFiveBytes.close();
-        
+        FileWriter writerFaultyFile = new FileWriter("faultytestfile.txt");
+        writerFaultyFile.write("a");    
+        writerFaultyFile.close();
+
         Compressor compressor = new Compressor();
         Decompressor decompressor = new Decompressor();
         
@@ -55,10 +53,18 @@ public class DecompressorTest {
         decompressor.decompress("decompressor", "emptytestfile.txt", 
                 "decompressedEmptyTestFile");        
         
-        decompressor.decompress("LZW", "threebytetestfile.txt", 
-                "LzwDecompressedThreeByteTestFile");
-        decompressor.decompress("Huffman", "fourbytetestfile.txt", 
-                "HuffmanDecompressedFourByteTestFile");
+        decompressor.decompress("LZW", "faultytestfile.txt", "LzwDecompressedFaultyTestFile");
+        decompressor.decompress("Huffman", "faultytestfile.txt", 
+                "HuffmanDecompressedFaultyTestFile");
+    }
+    
+    @Test
+    public void noDecompressionWhenDecompressorNotRecognized() throws IOException {       
+        Decompressor nonDecompressor = new Decompressor();
+        String s = nonDecompressor.decompress("NonDecompressor", "LzwDecompressedTestFile", 
+                "noDecompressedTestFile");
+        assertEquals("faulty", s);
+        assertTrue(!noDecompressedTestFile.exists());
     }
     
     @Test
@@ -75,24 +81,15 @@ public class DecompressorTest {
     public void noDecompressionIfFileIsEmpty() throws IOException {
         assertTrue(!decompressedEmptyTestFile.exists());        
     }
-
+    
     @Test
-    public void lzwNoDecompressionIfFileIsTooShort() throws IOException {
-        assertTrue(!decompressedThreeByteTestFile.exists());        
+    public void lzwNoDecompressionIfFileIsFaulty() throws IOException {
+        assertTrue(!lzwDecompressedFaultyTestFile.exists());        
     }
     
     @Test
-    public void huffmanNoDecompressionIfFileIsTooShort() throws IOException {
-        assertTrue(!decompressedFourByteTestFile.exists());        
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void exceptionThrownIfCompressorNotRecognized() throws IOException {
-        Decompressor nonDecompressor = new Decompressor();
-        
-        // Virheilmoitukseen päättyvä kutsu, jossa pakkaaja jota ei tunnisteta
-        nonDecompressor.decompress("NonDecompressor", "LzwDecompressedTestFile", 
-                "NoDecompressedTestFile");
+    public void huffmanNoDecompressionIfFileIsFaulty() throws IOException {
+        assertTrue(!huffmanDecompressedFaultyTestFile.exists());        
     }
     
     @Test
@@ -122,7 +119,6 @@ public class DecompressorTest {
 
         assertEquals("Testikirjoitus testausta varten.", textFromDecompressedFile);
     } 
-    
 
     /**
      * Poistaa testiluokan luomat tiedostot.
@@ -132,17 +128,15 @@ public class DecompressorTest {
     public static void tearDown() throws IOException {
         Files.deleteIfExists(Paths.get("testfile.txt"));
         Files.deleteIfExists(Paths.get("emptytestfile.txt"));
-        Files.deleteIfExists(Paths.get("threebytetestfile.txt"));
-        Files.deleteIfExists(Paths.get("fourbytetestfile.txt"));
+        Files.deleteIfExists(Paths.get("faultytestfile.txt"));         
         Files.deleteIfExists(Paths.get("LzwCompressedTestFile"));
         Files.deleteIfExists(Paths.get("HuffmanCompressedTestFile"));
         Files.deleteIfExists(Paths.get("LzwDecompressedTestFile"));
         Files.deleteIfExists(Paths.get("HuffmanDecompressedTestFile"));        
         Files.deleteIfExists(Paths.get("decompressedEmptyTestFile")); 
-        Files.deleteIfExists(Paths.get("LzwDecompressedThreeByteTestFile"));        
-        Files.deleteIfExists(Paths.get("HuffmanDecompressedFourByteTestFile"));
-
-        
+        Files.deleteIfExists(Paths.get("LzwDecompressedFaultyTestFile"));        
+        Files.deleteIfExists(Paths.get("HuffmanDecompressedFaultyTestFile"));
+        Files.deleteIfExists(Paths.get("noDecompressedTestFile"));        
     }
     
 }

@@ -57,7 +57,6 @@ public class HuffmanTest {
         String treeBits = (byte2str + byte3str).substring(6, 15);
         assertEquals("101111110", treeBits);
     }
-
     
     @Test
     public void decodeReturnsSameTextAsOriginalFile() {
@@ -87,4 +86,5 @@ public class HuffmanTest {
         // Virheilmoitukseen päättyvä kutsu
         huffman.decode(bytes);
     }
+    
 }

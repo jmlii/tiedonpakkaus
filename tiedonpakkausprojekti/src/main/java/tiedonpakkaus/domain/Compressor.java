@@ -17,40 +17,42 @@ public class Compressor {
     /**
      * Lukee tiedoston ja pakkaa sen tekstin pienemmäksi tiedostoksi.
      * @param compressor käyttäjän valitsema pakkausalgoritmi
-     * @param pathToCompress käyttäjän osoittaman pakattavan tiedoston osoite
-     * @param pathToCompressedFile käyttäjän antama osoite pakatulle tiedostolle
+     * @param pathInput käyttäjän osoittaman pakattavan tiedoston osoite
+     * @param pathOutput käyttäjän antama osoite pakatulle tiedostolle
      * @return pakatun tiedoston osoite
      * @throws java.io.IOException jos tiedostoa ei löydy tai siihen ei päästä käsiksi
      */
-    public String compress(String compressor, String pathToCompress, String pathToCompressedFile) 
+    public String compress(String compressor, String pathInput, String pathOutput) 
             throws IOException  {
         LZW lzw = new LZW();
         Huffman h = new Huffman();
         
-        
         // Luetaan pakattavan tiedoston sisältö merkkijonoksi
-        String text = readFile(pathToCompress);
+        String text = readFile(pathInput);
 
-        // Tarkistetaan, että tiedostossa oli tekstisisältöä,
-        // ja ilmoitetaan käyttäjälle, jos tiedosto oli tyhjä
+        // Tarkistetaan, että tiedostossa oli tekstisisältöä
         if (text.isEmpty()) {
-            return "null (pakattavaksi annettu tiedosto on tyhjä, pakkausta ei suoritettu)";
+            return "empty";
         }
 
         // Pakataan tiedoston sisältö
+        // Mahdolliset suorituksen aikaiset virheet keskeyttävät pakkaamisen
         byte[] bytes;
-        if (compressor.equals("LZW")) { 
-            bytes = lzw.encode(text);
-        } else if (compressor.equals("Huffman")) {
-            bytes = h.encode(text);
-        } else {
-            throw new IllegalArgumentException("Haluttua pakkausmenetelmää ei tunnistettu.");
+        
+        try {
+            if (compressor.equals("LZW")) { 
+                bytes = lzw.encode(text);
+            } else if (compressor.equals("Huffman")) {
+                bytes = h.encode(text);
+            } else {
+                throw new IllegalArgumentException("Haluttua pakkausmenetelmää ei tunnistettu.");
+            }
+        } catch (Exception ex) {
+            return ("faulty");
         }
-        
-        String encodedFileName = pathToCompressedFile;
-        
+               
         // Pakatun tiedon tallennus tiedostoksi käyttäjän ilmoittamaan paikkaan
-        String compressed = bytesToFile(bytes, encodedFileName);
+        String compressed = bytesToFile(bytes, pathOutput);
         return compressed;
     }
     
@@ -73,19 +75,19 @@ public class Compressor {
     /**
      * Tallentaa tavutaulukon tiedostoksi. 
      * @param bytes tavutaulukko
-     * @param fileName pakatulle tiedostolle annettava nimi (polku ja tiedostonimi)
+     * @param filePath pakatulle tiedostolle annettava nimi (polku ja tiedostonimi)
      * @return pakatun tiedoston polku
      * @throws java.io.IOException
      */
-    private String bytesToFile(byte[] bytes, String fileName) throws IOException {
+    private String bytesToFile(byte[] bytes, String filePath) throws IOException {
         
-        BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(fileName));
+        BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(filePath));
         for (byte b : bytes) {
             writer.write(b);
         } 
         
         writer.close();
-        return fileName;
+        return filePath;
     }
 
 }
