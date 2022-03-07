@@ -2,12 +2,9 @@ package tiedonpakkaus.domain;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Palveluluokka tiedoston pakkaamiselle.
