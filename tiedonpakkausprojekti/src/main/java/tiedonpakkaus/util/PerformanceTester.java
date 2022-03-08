@@ -176,6 +176,9 @@ public class PerformanceTester {
         return filePath;
     }
 
+    /**
+     * Poistaa suorituskykytestien aikana luodut tiedostot.
+     */
     public void removeTestOutputFiles() {
         for (int i = 0; i < compressables.length; i++) {
             try {

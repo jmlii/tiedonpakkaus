@@ -176,7 +176,8 @@ public class UserInterface {
             System.out.println("Suorituskykytestien tulokset talletettu osoitteisiin " + output);
             
             while (true) {
-                System.out.println("Poistetaanko suorituskykytestauksen aikana muodostuneet tiedostot?");
+                System.out.println("Poistetaanko suorituskykytestauksen aikana muodostuneet "
+                        + "tiedostot?");
                 System.out.println("Y = kyllä N = ei");
                 String input = scanner.nextLine();
                 if (input.equalsIgnoreCase("Y")) {
