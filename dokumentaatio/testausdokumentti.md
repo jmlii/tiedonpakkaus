@@ -23,7 +23,7 @@ Ohjelman tekstitiedostojen pakkaamisen ja purkamisen suorituskykyä on testattu 
 
 Suorituskykytestaus pakkaa ja purkaa tiedostot ja tallettaa testien tulokset kahteen tiedostoon, joista toisessa tulokset listataan sanallisesti ja toisessa ne ovat muotoiltuna helposti md-tiedoston osaksi kopioitavaksi. Tuloksissa ilmoitetaan alkuperäisen ja pakatun tiedoston koot, pakkausteho eli pakatun tiedoston koko suhteessa alkuperäiseen prosentteina sekä pakkaamiseen ja purkamiseen kuluneet ajat millisekunteina. Koska kuluneissa ajoissa esiintyy vaihtelua suorituskertojen välillä, suorittaa ohjelma testit kummallakin algoritmilla 9 kertaa, ja tuloksista talletetaan vain niiden mediaani. 
 
-Alla on listattu suorituskykytestauksen tulokset yhdeltä testauskerralta. 
+Alla on listattu suorituskykytestauksen tulokset yhdeltä testauskerralta ja algoritmeja vertailtu niiden perusteella. 
 
 ### Lempel-Ziv-Welch
 
@@ -46,8 +46,6 @@ alkuperäinen koko (tavua) | pakattu koko (tavua) | pakattu / alkuperäinen (%) 
 1 048 576 | 304 295 | 29.020 | 371.246 | 237.150
 2 097 152 | 556 353 | 26.529 | 796.787 | 513.327
 
-LZW:n pakkaustehokkuus on huono pienillä tekstitiedostoilla, koska tavallisessa tekstissä ei tyypillisesti ehdi olla paljon toistoa lyhyissä teksteissä. Noin 50 % pakkaustehokkuus saavutettiin kuitenkin jo noin 4 kilotavun tiedostolla, ja suurimmissa testitiedostoissa saavutettiin huomattava tehokkuus. Kaikissa testitiedostoissa päästiin alle sekunnin aikoihin.
-
 ### Huffman
 
 alkuperäinen koko (tavua) | pakattu koko (tavua) | pakattu / alkuperäinen (%) | pakkausaika (ms) | purkuaika (ms)
@@ -69,5 +67,16 @@ alkuperäinen koko (tavua) | pakattu koko (tavua) | pakattu / alkuperäinen (%) 
 1 048 576 | 560 594 | 53.462 | 62.908 | 417.519
 2 097 152 | 1 121 061 | 53.456 | 131.862 | 741.858
 
-Huffmanin koodauksessa pakatun tiedoston kokoa kasvattaa pakatun tekstin mukana talletettu puun bittiesitys. Huffman saavuttaa noin 50 % pakkaustehokkuuden kuitenkin hieman pienemmällä tiedostolla kuin LZW, mutta sen tehokkuus jää isoillakin tiedostoilla noin 53 %:iin. Ajankäytöllisesti Huffman on melko tehokas pienemmissä tiedostoissa ja isojenkin pakkaamisessa, mutta isojen tiedostojen purkaminen on suhteellisen hidasta. 
+### Vertailu
 
+LZW:n pakkaustehokkuus on huono pienillä tekstitiedostoilla, koska tavallisessa tekstissä ei tyypillisesti ehdi olla paljon toistoa lyhyissä teksteissä. Pienimmässä testitiedostossa pakattu tiedosto on jopa suurempi kuin alkuperäinen. 
+Noin 50 % pakkaustehokkuus saavutettiin kuitenkin jo noin 4 kilotavun tiedostolla, ja suurimmissa testitiedostoissa saavutettiin huomattava tehokkuus, kun pakattu tiedosto oli vain noin 26-30 % alkuperäisestä tiedostokoosta.
+
+Huffmanin koodauksessa pakatun tiedoston kokoa kasvattaa pakatun tekstin mukana talletettu puun bittiesitys. Huffman saavuttaa noin 50 % pakkaustehokkuuden kuitenkin hieman pienemmällä tiedostolla kuin LZW, mutta sen tehokkuus jää isoillakin tiedostoilla noin 50 %:iin, sillä mikään pakatuista tiedostoista ei ollut alle 53 % alkuperäisestä tiedostokoosta. 
+
+![pakkaustehokkuus](/dokumentaatio/kuvat/kuva_pakkaustehokkuus.png)
+
+Kumpikin algoritmi suoriutui kaikilla tiedostoilla niin pakkaamisesta kuin purkamisesta alle sekunnissa. LZW pakkasi isot tiedostot huomattavasti hitaammin kuin Huffman, joka suoriutui melko nopeasti kaikissa testitiedostoissa. Isojen tiedostojen purkamisesta LZW puolestaan suoriutui hieman nopeammin kuin Huffman. 
+
+![pakkausaika](/dokumentaatio/kuvat/kuva_pakkausaika.png) 
+![purkuaika](/dokumentaatio/kuvat/kuva_purkuaika.png)
