@@ -3,6 +3,7 @@
 Projekti on Helsingin yliopiston tietojenkäsittelytieteen kandiohjelman tietorakenteet ja algoritmit -harjoitustyö (Tiralabra). 
 
 ## Dokumentaatio
+- [käyttöohje](/dokumentaatio/kayttoohje.md)
 - [määrittelydokumentti](/dokumentaatio/maarittelydokumentti.md)
 - [testausdokumentti](/dokumentaatio/testausdokumentti.md)
 - [toteutusdokumentti](/dokumentaatio/toteutusdokumentti.md)
