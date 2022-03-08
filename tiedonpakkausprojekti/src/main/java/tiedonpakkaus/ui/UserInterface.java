@@ -4,13 +4,15 @@ import java.io.IOException;
 import java.util.Scanner;
 import tiedonpakkaus.domain.Compressor;
 import tiedonpakkaus.domain.Decompressor;
+import tiedonpakkaus.util.PerformanceTester;
 
 public class UserInterface {
         
     private String[] commandDescriptions = {
         "1  -  Pakkaa tiedosto",
         "2  -  Pura pakattu tiedosto",
-        "3  -  Sulje ohjelma",
+        "3  -  Aja suorituskykytestit",
+        "4  -  Sulje ohjelma"
     };
 
     private final Scanner scanner;
@@ -25,7 +27,7 @@ public class UserInterface {
     /**
      * Ohjelman käynnistys.
      */
-    public void start() {
+    public void start() throws IOException {
         
         System.out.println("***** Tekstitiedoston pakkaus ja purku *****");      
         
@@ -38,14 +40,19 @@ public class UserInterface {
             } else if (input.equals("2")) {
                 execute(2);
             } else if (input.equals("3")) {
+                runPerformanceTests();                
+            } else if (input.equals("4")) {
                 System.exit(0);
             } else {
-                System.out.println("Valitse toiminto 1, 2 tai 3");
+                System.out.println("Valitse toiminto 1, 2, 3 tai 4");
             }
             System.out.println("");
         }
     }
         
+    /**
+     * Tulostaa toimintovalikon.
+     */
     private void printCommands() {
         System.out.println("Valitse toiminto:");
         for (String command : commandDescriptions) {
@@ -54,7 +61,11 @@ public class UserInterface {
         System.out.println("");
     }
 
-    private void execute(int choice) {
+    /**
+     * Käynnistää tiedoston pakkaamisen tai purkamisen käyttäjän valinnan mukaisesti
+     * @param input Käyttäjän valitsema toiminto
+     */
+    private void execute(int input) {
         
         System.out.println("\n** Palaa päävalikkoon komennolla R **");
         
@@ -70,7 +81,7 @@ public class UserInterface {
             return;
         }  else if (pathOutput.equals(pathInput)) {
             System.out.println("Ei voida tallentaa alkuperäisen tiedoston päälle.");
-            if (choice == 1) {
+            if (input == 1) {
                 System.out.println("Osoitteeksi muutettu " + pathInput + "_compressed.bin");
                 pathOutput = pathInput + "_compressed.bin";
             } else {
@@ -78,7 +89,7 @@ public class UserInterface {
                 pathOutput = pathInput + "_decompressed.txt";
             }
         } else if (pathOutput.equals("")) {
-            if (choice == 1) {
+            if (input == 1) {
                 System.out.println("Osoitteeksi asetettu " + pathInput + "_compressed.bin");
                 pathOutput = pathInput + "_compressed.bin";
             } else {
@@ -92,7 +103,8 @@ public class UserInterface {
             return;
         }
                 
-        if (choice == 1) {
+        if (input == 1) {
+            // Kun toiminnoksi valittiin pakkaaminen
             Compressor compressor = new Compressor();
             String path = "";
             try {
@@ -109,7 +121,8 @@ public class UserInterface {
                 System.out.println("Käsiteltävää tiedostoa tai haluttua tallennuspaikkaa ei löydy, "
                         + "tarkista osoitteet.");
             }
-        } else if (choice == 2) {
+        } else if (input == 2) {
+            // Kun toiminnoksi valittiin purkaminen
             Decompressor decompressor = new Decompressor(); 
             String path = "";
             try {
@@ -132,6 +145,10 @@ public class UserInterface {
         }
     }
     
+    /**
+     * Tiedoston pakkaamisessa tai purkamisessa käytettävän pakkausalgoritmin valinta
+     * @return Käyttäjän valinta algoritmiksi tai paluukomento
+     */
     private String askAlgorithm() {
         while (true) {
             System.out.println("Pakkausmenetelmä: L = Lempel-Ziv-Welch, H = Huffman.");
@@ -146,6 +163,36 @@ public class UserInterface {
                 System.out.println("Annettu pakkausmenetelmä ei kelpaa.");
             }
         }
+    }
+
+    /**
+     * Suorituskykytestien suorittaminen.
+     */
+    private void runPerformanceTests() throws IOException {
+        
+        PerformanceTester tester = new PerformanceTester();
+        String output = tester.testPerformance();
+        if (output != null) {
+            System.out.println("Suorituskykytestien tulokset talletettu osoitteisiin " + output);
+            
+            while (true) {
+                System.out.println("Poistetaanko suorituskykytestauksen aikana muodostuneet tiedostot?");
+                System.out.println("Y = kyllä N = ei");
+                String input = scanner.nextLine();
+                if (input.equalsIgnoreCase("Y")) {
+                    tester.removeTestOutputFiles();
+                    return;
+                } else if (input.equalsIgnoreCase("N")) {
+                    return;
+                } else {
+                    System.out.println("Valitse Y tai N");
+                }
+            }
+        } else {
+            System.out.println("Testaus ei onnistunut. Tarkista, että testattavat tiedostot "
+                    + "ovat files-kansiossa.");
+        }
+        
     }
 
 }

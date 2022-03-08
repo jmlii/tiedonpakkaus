@@ -30,7 +30,7 @@ jacocoTestReport {
     }
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['tiedonpakkaus/Main.class', "tiedonpakkaus/ui"])
+            fileTree(dir: it, exclude: ['tiedonpakkaus/Main.class', "tiedonpakkaus/ui", "tiedonpakkaus/util"])
         }))
     }
 }

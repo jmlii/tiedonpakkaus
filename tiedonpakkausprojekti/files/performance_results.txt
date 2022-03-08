@@ -1,0 +1,256 @@
+Tiedosto: file64B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 64 bytes 
+Pakatun tiedoston koko: 66 bytes 
+Pakkausteho: 103.125 % 
+Pakkausaika: 0.387 ms 
+Purkuaika: 0.370 ms 
+
+Tiedosto: file128B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 128 bytes 
+Pakatun tiedoston koko: 116 bytes 
+Pakkausteho: 90.625 % 
+Pakkausaika: 0.389 ms 
+Purkuaika: 0.528 ms 
+
+Tiedosto: file256B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 256 bytes 
+Pakatun tiedoston koko: 204 bytes 
+Pakkausteho: 79.688 % 
+Pakkausaika: 0.564 ms 
+Purkuaika: 0.511 ms 
+
+Tiedosto: file512B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 512 bytes 
+Pakatun tiedoston koko: 398 bytes 
+Pakkausteho: 77.734 % 
+Pakkausaika: 0.929 ms 
+Purkuaika: 0.834 ms 
+
+Tiedosto: file1024B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 1024 bytes 
+Pakatun tiedoston koko: 689 bytes 
+Pakkausteho: 67.285 % 
+Pakkausaika: 0.935 ms 
+Purkuaika: 0.974 ms 
+
+Tiedosto: file2048B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 2048 bytes 
+Pakatun tiedoston koko: 1317 bytes 
+Pakkausteho: 64.307 % 
+Pakkausaika: 2.601 ms 
+Purkuaika: 3.014 ms 
+
+Tiedosto: file4096B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 4096 bytes 
+Pakatun tiedoston koko: 2264 bytes 
+Pakkausteho: 55.273 % 
+Pakkausaika: 5.790 ms 
+Purkuaika: 2.870 ms 
+
+Tiedosto: file8192B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 8192 bytes 
+Pakatun tiedoston koko: 4174 bytes 
+Pakkausteho: 50.952 % 
+Pakkausaika: 6.948 ms 
+Purkuaika: 4.227 ms 
+
+Tiedosto: file16384B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 16384 bytes 
+Pakatun tiedoston koko: 7567 bytes 
+Pakkausteho: 46.185 % 
+Pakkausaika: 11.360 ms 
+Purkuaika: 7.260 ms 
+
+Tiedosto: file32768B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 32768 bytes 
+Pakatun tiedoston koko: 12268 bytes 
+Pakkausteho: 37.439 % 
+Pakkausaika: 13.661 ms 
+Purkuaika: 11.419 ms 
+
+Tiedosto: file65536B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 65536 bytes 
+Pakatun tiedoston koko: 22179 bytes 
+Pakkausteho: 33.842 % 
+Pakkausaika: 32.322 ms 
+Purkuaika: 19.294 ms 
+
+Tiedosto: file131072B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 131072 bytes 
+Pakatun tiedoston koko: 41794 bytes 
+Pakkausteho: 31.886 % 
+Pakkausaika: 53.382 ms 
+Purkuaika: 31.208 ms 
+
+Tiedosto: file262144B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 262144 bytes 
+Pakatun tiedoston koko: 80551 bytes 
+Pakkausteho: 30.728 % 
+Pakkausaika: 101.434 ms 
+Purkuaika: 61.626 ms 
+
+Tiedosto: file524288B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 524288 bytes 
+Pakatun tiedoston koko: 156602 bytes 
+Pakkausteho: 29.869 % 
+Pakkausaika: 195.810 ms 
+Purkuaika: 125.634 ms 
+
+Tiedosto: file1048576B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 1048576 bytes 
+Pakatun tiedoston koko: 304295 bytes 
+Pakkausteho: 29.020 % 
+Pakkausaika: 371.246 ms 
+Purkuaika: 237.150 ms 
+
+Tiedosto: file2097152B.txt
+Algoritmi: LZW
+Alkuperäisen tiedoston koko: 2097152 bytes 
+Pakatun tiedoston koko: 556353 bytes 
+Pakkausteho: 26.529 % 
+Pakkausaika: 796.787 ms 
+Purkuaika: 513.327 ms 
+
+Tiedosto: file64B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 64 bytes 
+Pakatun tiedoston koko: 59 bytes 
+Pakkausteho: 92.188 % 
+Pakkausaika: 0.195 ms 
+Purkuaika: 0.353 ms 
+
+Tiedosto: file128B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 128 bytes 
+Pakatun tiedoston koko: 95 bytes 
+Pakkausteho: 74.219 % 
+Pakkausaika: 0.223 ms 
+Purkuaika: 0.429 ms 
+
+Tiedosto: file256B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 256 bytes 
+Pakatun tiedoston koko: 172 bytes 
+Pakkausteho: 67.188 % 
+Pakkausaika: 0.222 ms 
+Purkuaika: 0.431 ms 
+
+Tiedosto: file512B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 512 bytes 
+Pakatun tiedoston koko: 314 bytes 
+Pakkausteho: 61.328 % 
+Pakkausaika: 0.192 ms 
+Purkuaika: 0.441 ms 
+
+Tiedosto: file1024B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 1024 bytes 
+Pakatun tiedoston koko: 595 bytes 
+Pakkausteho: 58.105 % 
+Pakkausaika: 0.342 ms 
+Purkuaika: 1.485 ms 
+
+Tiedosto: file2048B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 2048 bytes 
+Pakatun tiedoston koko: 1144 bytes 
+Pakkausteho: 55.859 % 
+Pakkausaika: 1.183 ms 
+Purkuaika: 2.437 ms 
+
+Tiedosto: file4096B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 4096 bytes 
+Pakatun tiedoston koko: 2243 bytes 
+Pakkausteho: 54.761 % 
+Pakkausaika: 0.599 ms 
+Purkuaika: 3.051 ms 
+
+Tiedosto: file8192B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 8192 bytes 
+Pakatun tiedoston koko: 4415 bytes 
+Pakkausteho: 53.894 % 
+Pakkausaika: 1.228 ms 
+Purkuaika: 6.164 ms 
+
+Tiedosto: file16384B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 16384 bytes 
+Pakatun tiedoston koko: 8798 bytes 
+Pakkausteho: 53.699 % 
+Pakkausaika: 1.065 ms 
+Purkuaika: 6.924 ms 
+
+Tiedosto: file32768B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 32768 bytes 
+Pakatun tiedoston koko: 17554 bytes 
+Pakkausteho: 53.571 % 
+Pakkausaika: 2.209 ms 
+Purkuaika: 14.244 ms 
+
+Tiedosto: file65536B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 65536 bytes 
+Pakatun tiedoston koko: 35087 bytes 
+Pakkausteho: 53.539 % 
+Pakkausaika: 3.926 ms 
+Purkuaika: 34.585 ms 
+
+Tiedosto: file131072B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 131072 bytes 
+Pakatun tiedoston koko: 70106 bytes 
+Pakkausteho: 53.487 % 
+Pakkausaika: 9.235 ms 
+Purkuaika: 51.271 ms 
+
+Tiedosto: file262144B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 262144 bytes 
+Pakatun tiedoston koko: 140104 bytes 
+Pakkausteho: 53.445 % 
+Pakkausaika: 18.829 ms 
+Purkuaika: 126.531 ms 
+
+Tiedosto: file524288B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 524288 bytes 
+Pakatun tiedoston koko: 280288 bytes 
+Pakkausteho: 53.461 % 
+Pakkausaika: 29.786 ms 
+Purkuaika: 213.252 ms 
+
+Tiedosto: file1048576B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 1048576 bytes 
+Pakatun tiedoston koko: 560594 bytes 
+Pakkausteho: 53.462 % 
+Pakkausaika: 62.908 ms 
+Purkuaika: 417.519 ms 
+
+Tiedosto: file2097152B.txt
+Algoritmi: Huffman
+Alkuperäisen tiedoston koko: 2097152 bytes 
+Pakatun tiedoston koko: 1121061 bytes 
+Pakkausteho: 53.456 % 
+Pakkausaika: 131.862 ms 
+Purkuaika: 741.858 ms 
+

@@ -31,8 +31,7 @@ public class LZWTest {
         // Tavutaulukossa bittien alkuun tulee 1 kpl 0-bittiä, sisällöksi 01111110
         // Tavuna bittijono on arvoltaan 126
         
-        byte[] bytes = lzw.encode(testStringUnknownChar);
-        
+        byte[] bytes = lzw.encode(testStringUnknownChar);        
         assertEquals(126, bytes[2]);
     }
     

@@ -38,7 +38,7 @@ public class Huffman {
         String treeBits = bits.substring(16, 16 + treeBitsLength);   
         String textBits = bits.substring(16 + treeBitsLength);
         HuffmanNode tree = bitsToTree(treeBits);
-        String text = bitsToText(textBits, tree);
+        String text = bitsToText(textBits, tree);     
         return text;
     }
       
