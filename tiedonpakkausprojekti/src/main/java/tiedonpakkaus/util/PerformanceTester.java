@@ -4,9 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import tiedonpakkaus.domain.Compressor;
 import tiedonpakkaus.domain.Decompressor;
 
@@ -16,56 +21,62 @@ import tiedonpakkaus.domain.Decompressor;
  */
 public class PerformanceTester {
     
-    // Testauksessa käytettävät tiedostot
-    // Ohjelma odottaa näiden tiedostojen olevan projektin juuressa olevassa files-kansiossa
-    String[] compressables = {
-        "files/file64B.txt",
-        "files/file128B.txt",
-        "files/file256B.txt",
-        "files/file512B.txt",
-        "files/file1024B.txt",
-        "files/file2048B.txt",
-        "files/file4096B.txt",
-        "files/file8192B.txt",
-        "files/file16384B.txt",
-        "files/file32768B.txt",
-        "files/file65536B.txt",
-        "files/file131072B.txt",
-        "files/file262144B.txt",
-        "files/file524288B.txt",
-        "files/file1048576B.txt",
-        "files/file2097152B.txt"
-    };
+    List<String> compressables = new ArrayList<>();
+    List<String> results = new ArrayList<>();
+    List<String> resultsMd = new ArrayList<>();
     
     String[] algorithms = {
         "LZW",
         "Huffman"
     };
     
-    String[] results = new String[32]; 
-    String[] resultsMd = new String[33];
-    
     Compressor compressor = new Compressor();
     Decompressor decompressor = new Decompressor();
-    
-    /**
-     * Testaa algoritmien suorituskykyä 16 eri kokoisella tiedostolla.
-     * Testauksessa käytettävien tiedostojen on sijaittava projektin juuren files-kansiossa.
-     */
-    public String testPerformance() throws IOException {
         
+    /**
+     * Testaa algoritmien suorituskykyä.
+     * @param pathToTest Testattavan tiedoston tai hakemiston osoite
+     * @param pathToResultDir Hakemisto tulostiedostojen tallettamiselle
+     * @return Testaustulokset sisältävien tiedostojen osoitteet
+     */
+    public String testPerformance(String pathToTest, String pathToResultDir) {
+
+        // Lisätään testattavat tiedostonimet listalle
+        // Jos polku on virheellinen tai sitä ei voida käsitellä, ilmoitetaan käyttäjälle
+        File path = new File(pathToTest);
+        
+        if (path.isFile()) {
+            compressables.add(path.getPath());
+        } else  {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(pathToTest))) {
+                for (Path pathInDir : stream) {
+                    if (!Files.isDirectory(pathInDir)) {
+                        compressables.add(pathInDir.toString());
+                        
+                    }
+                } 
+            } catch (IOException ex) {
+                System.out.println("Tiedostoa tai hakemistoa ei löydy tai ei voida käsitellä.");
+                return null;
+            }
+        }     
+        
+        // Järjestetään tiedostojen nimet aakkosjärjestykseen
+        Collections.sort(compressables);
+ 
+        // Aloitetaan testaus
         System.out.println("Ajetaan suorituskykytestejä...");
         
-        for (int i = 0; i < compressables.length; i++) {
+        for (int i = 0; i < compressables.size(); i++) {
             
             String algorithm = "";
             
-            String pathInput = compressables[i];
-            String pathCompressOutput = compressables[i] + "_compressed.bin";
-            String pathDecompressOutput = compressables[i] + "_decompressed.txt";
+            String pathInput = compressables.get(i);
+            String pathCompressOutput = compressables.get(i) + "_compressed.bin";
+            String pathDecompressOutput = compressables.get(i) + "_decompressed.txt";
             
-            long[] compressTimes = new long[10];
-            long[] decompressTimes = new long[10];
+            long[] compressTimes = new long[9];
+            long[] decompressTimes = new long[9];
             
             File fileToCompress = new File(pathInput);
             long inputFileSize = fileToCompress.length();
@@ -85,14 +96,19 @@ public class PerformanceTester {
             // Suoritetaan testaus kummallakin algoritmilla
             for (int j = 0; j < algorithms.length; j++) {
                 algorithm = algorithms[j];
-                
+                             
                 // Suoritetaan pakkaaminen ja purkaminen 9 kertaa kullekin tiedostolle
                 
                 // Pakkaaminen ja ajan mittaus
                 for (int k = 0; k < 9; k++) {
                     compressStart = System.nanoTime();
-                    pathToCompressed = compressor.compress(algorithm, pathInput, 
-                           pathCompressOutput);
+                    try {
+                        pathToCompressed = compressor.compress(algorithm, pathInput,
+                                pathCompressOutput);
+                    } catch (IOException ex) {
+                        System.out.println("Pakattavaa tiedostoa " + pathInput + " ei löydy tai "
+                                + "hakemistopolkuun " + pathCompressOutput + " ei voi tallentaa.");
+                    }
                     compressFinish = System.nanoTime();
                     compressTime = compressFinish - compressStart;
                     compressTimes[k] = compressTime;   
@@ -100,9 +116,19 @@ public class PerformanceTester {
                 
                 // Purkaminen ja ajan mittaus
                 for (int k = 0; k < 9; k++) {
+                    if (pathToCompressed.equals("empty")) {
+                        break;
+                    }
+                    
                     decompressStart = System.nanoTime();
-                    pathToDecompressed = decompressor.decompress(algorithm, pathToCompressed, 
+                    try {
+                        pathToDecompressed = decompressor.decompress(algorithm, pathToCompressed,
                             pathDecompressOutput);
+                    } catch (IOException ex) {
+                        System.out.println("Purettavaa tiedostoa " + pathToCompressed + " ei löydy"
+                                + " tai hakemistopolkuun " + pathDecompressOutput 
+                                + " ei voi tallentaa.");
+                    }
                     decompressFinish = System.nanoTime();
                     decompressTime = decompressFinish - decompressStart;
                     decompressTimes[k] = decompressTime;
@@ -122,68 +148,87 @@ public class PerformanceTester {
                 // Pakkaamisen tehokkuus-% (pakatun tiedoston koko suhteessa alkuperäiseen)
                 double effectiveness = 100 * (double) outputFileSize / inputFileSize;
 
-                // Talletetaan tiedot                
+                // Talletetaan ja tulostetaan tiedot              
                 String result = "Tiedosto: " + fileToCompress.getName() + "\n"
                         + "Algoritmi: " + algorithm + "\n"
-                        + "Alkuperäisen tiedoston koko: " + inputFileSize + " bytes \n"
-                        + "Pakatun tiedoston koko: " + outputFileSize + " bytes \n"
+                        + "Alkuperäinen koko: " + inputFileSize + " bytes \n"
+                        + "Pakattu koko: " + outputFileSize + " bytes \n"
                         + "Pakkausteho: " + String.format("%.3f", effectiveness) + " % \n" 
                         + "Pakkausaika: " + String.format("%.3f", compressTimeMedian) + " ms \n"
                         + "Purkuaika: " + String.format("%.3f", decompressTimeMedian) + " ms \n";
                 
-                String resultMd = algorithm + " | " 
+                results.add(result);
+                                
+                if (!pathToResultDir.equals("")) {
+                    String resultMd = algorithm + " | " 
                         + inputFileSize + " | " 
                         + outputFileSize + " | " 
                         + String.format("%.3f", effectiveness) + " | " 
                         + String.format("%.3f", compressTimeMedian) + " | " 
                         + String.format("%.3f", decompressTimeMedian);
-                
-                results[i + j * 16] = result;
-                resultsMd[i + 1 + j * 16] = resultMd;
+                          
+                    resultsMd.add(resultMd);
+                }
             }
         }
         
-        // taulukon otsikkorivit
-        resultsMd[0] = "algoritmi | alkuperäinen koko (tavua) | pakattu koko (tavua) | "
-                + "pakattu / alkuperäinen (%) | pakkausaika (ms) | purkuaika (ms)\n"
-                + "---|---|---|---|---|---";
-        
-        String pathResults = null; 
-        String pathResultsMd = null;
-        
-        try {
-            pathResults = resultsToFile(results, "files/performance_results.txt");
-            pathResultsMd = resultsToFile(resultsMd, "files/performance_resultsMD.txt");
-        } catch (IOException ex) {
-            System.out.println("Ei voitu tallettaa tiedostoon.");;
+        if (pathToResultDir.equals("")) {
+            // Tulostetaan tulokset ruudulle, jos käyttäjä ei halunnut niitä tiedostoon
+            for (String result : results) {
+                System.out.println(result);
+            } 
+        } else {
+            // Tulosten tallettaminen tiedostoon
+            
+            // md-muotoisen taulukon otsikkorivit 
+            resultsMd.add(0, "algoritmi | alkuperäinen koko (tavua) | pakattu koko (tavua) | "
+                    + "pakattu / alkuperäinen (%) | pakkausaika (ms) | purkuaika (ms)\n"
+                    + "---|---|---|---|---|---");
+
+            String pathResults = null; 
+            String pathResultsMd = null;
+
+            try {
+                pathResults = resultsToFile(results, pathToResultDir + "/performance_results.txt");
+                pathResultsMd = resultsToFile(resultsMd, pathToResultDir 
+                        + "/performance_resultsMD.txt");
+                // Lopuksi palautetaan tulostiedostojen osoitteet
+                return pathResults + " ja " + pathResultsMd;
+            } catch (IOException ex) {
+                System.out.println("Ei voitu tallettaa tiedostoon.");
+            }
+            
         }
-        
-        return pathResults + " ja " + pathResultsMd;
+        // Palautetaan tyhjä merkkijono, jos käyttäjä ei halunnut tuloksia tiedostoon
+        // tai jos tulosten tallentamissa tapahtui IOException-virhe
+        return "";
     }
     
     /**
      * Tallettaa testauksen tulokset tiedostoon.
-     * @param results Suorituskykytestien tulokset merkkijonolistana
+     * @param resultList Suorituskykytestien tulokset merkkijonolistana
      * @param filePath Tulostiedoston osoite
-     * @throws IOException 
      */
-    private String resultsToFile(String[] results, String filePath) throws IOException {
+    private String resultsToFile(List<String> resultList, String filePath) throws IOException {
+
         BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
-        for (int i = 0; i < results.length; i++) {
-            bw.write(results[i] + "\n");
+        for (int i = 0; i < resultList.size(); i++) {
+            bw.write(resultList.get(i) + "\n");
         }
         bw.close();
         return filePath;
+
     }
 
     /**
      * Poistaa suorituskykytestien aikana luodut tiedostot.
      */
     public void removeTestOutputFiles() {
-        for (int i = 0; i < compressables.length; i++) {
+
+        for (int i = 0; i < compressables.size(); i++) {
             try {
-                Files.deleteIfExists(Paths.get(compressables[i] + "_compressed.bin"));
-                Files.deleteIfExists(Paths.get(compressables[i] + "_decompressed.txt"));
+                Files.deleteIfExists(Paths.get(compressables.get(i) + "_compressed.bin"));
+                Files.deleteIfExists(Paths.get(compressables.get(i) + "_decompressed.txt"));
             } catch (IOException ex) {
                 System.out.println("Ongelma tiedostojen poistamisessa.");
             }

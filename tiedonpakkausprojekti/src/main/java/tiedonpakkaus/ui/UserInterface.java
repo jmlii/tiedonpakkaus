@@ -170,28 +170,43 @@ public class UserInterface {
      */
     private void runPerformanceTests() throws IOException {
         
+        System.out.println("\n** Palaa päävalikkoon komennolla R **");
+        
+        System.out.println("Anna testattavan tiedoston osoite tai tiedostot sisältävän hakemiston "
+                + "osoite:");
+        String pathToTest = scanner.nextLine();
+        if (pathToTest.equalsIgnoreCase("R")) {
+            return;
+        }
+        System.out.println("Anna hakemisto tulostiedostojen tallettamiselle "
+                + "tai jätä tyhjäksi jos haluat tulokset ruudulle:");
+        String pathToResultDir = scanner.nextLine();
+        if (pathToResultDir.equalsIgnoreCase("R")) {
+            return;
+        }
+        
         PerformanceTester tester = new PerformanceTester();
-        String output = tester.testPerformance();
-        if (output != null) {
+        String output = tester.testPerformance(pathToTest, pathToResultDir);
+        if (output == null) {
+            System.out.println("Testaus ei onnistunut. Tarkista testattavien tiedostojen osoite.");
+            return;
+        } else if (!output.equals("")) {
             System.out.println("Suorituskykytestien tulokset talletettu osoitteisiin " + output);
-            
-            while (true) {
-                System.out.println("Poistetaanko suorituskykytestauksen aikana muodostuneet "
-                        + "tiedostot?");
-                System.out.println("Y = kyllä N = ei");
-                String input = scanner.nextLine();
-                if (input.equalsIgnoreCase("Y")) {
-                    tester.removeTestOutputFiles();
-                    return;
-                } else if (input.equalsIgnoreCase("N")) {
-                    return;
-                } else {
-                    System.out.println("Valitse Y tai N");
-                }
+        }
+       
+        while (true) {
+            System.out.println("Poistetaanko suorituskykytestauksen aikana muodostuneet "
+                    + "pakkaus- ja purkutiedostot?");
+            System.out.println("Y = kyllä N = ei");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("Y")) {
+                tester.removeTestOutputFiles();
+                return;
+            } else if (input.equalsIgnoreCase("N")) {
+                return;
+            } else {
+                System.out.println("Valitse Y tai N");
             }
-        } else {
-            System.out.println("Testaus ei onnistunut. Tarkista, että testattavat tiedostot "
-                    + "ovat files-kansiossa.");
         }
         
     }
