@@ -23,7 +23,9 @@ Ohjelman tekstitiedostojen pakkaamisen ja purkamisen suorituskykyä on testattu 
 
 Suorituskykytestaus pakkaa ja purkaa tiedostot ja tallettaa testien tulokset kahteen tiedostoon, joista toisessa tulokset listataan sanallisesti ja toisessa ne ovat muotoiltuna helposti md-tiedoston osaksi kopioitavaksi. Tuloksissa ilmoitetaan alkuperäisen ja pakatun tiedoston koot, pakkausteho eli pakatun tiedoston koko suhteessa alkuperäiseen prosentteina sekä pakkaamiseen ja purkamiseen kuluneet ajat millisekunteina. Koska kuluneissa ajoissa esiintyy vaihtelua suorituskertojen välillä, suorittaa ohjelma testit kummallakin algoritmilla 9 kertaa, ja tuloksista talletetaan vain niiden mediaani. 
 
-Alla on listattu suorituskykytestauksen tulokset yhdeltä testauskerralta ja algoritmeja vertailtu niiden perusteella. 
+Alla on listattu suorituskykytestauksen tulokset yhdeltä testauskerralta ja algoritmeja vertailtu niiden perusteella. Suorituskykytestit ajettiin useaan kertaan, jotta nähtiin onko testauskertojen aikamittauksien mediaaneissa isoja eroja. Suurimmat poikkeukset havaittiin siinä, että ohjelman käynnistämisen jälkeen ensimmäisellä suorituskykytestikerralla ensimmäisen tutkittavan tiedoston ajat olivat huomattavan hitaita muihin lähellä samaa kokoa oleviin ja jopa suurempiin tiedostoihin verrattuna, eikä siis edes testien toistaminen useita kertoja yhden suorituskykytestauksen sisällä ja tulosten mediaanin käyttäminen poistanut tätä ilmiötä. Testauksessa tarkistettiin myös, että edes kierrosten kasvattaminen 9:stä 99:ään ei vaikuttanut. Jos suorituskykytestit toistettiin sulkematta välissä ohjelmaa, saatiin myös ensimmäiselle tiedostolle samansuhtaiset ajat kuin muillekin tiedostoille.
+
+Muuten tuloksissa ei havaittu isoja poikkeamia testikertojen välillä, joten alla olevia tuloksia voidaan pitää edustavina algoritmien suorituskykyä arvioidessa. Nämä tulokset ovat suorituskerralta, joka ei ollut ensimmäinen ohjelman käynnistämisen jälkeen. 
 
 ### Lempel-Ziv-Welch
 
