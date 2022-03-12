@@ -5,6 +5,8 @@ Ohjelmalla voi pakata tekstitiedostoja Lempel-Ziv-Welch-algoritmilla tai Huffman
 Rajoituksena häviöttömyyteen kuitenkin on, että algoritmit eivät tunnista kaikkia eri kirjaimistoissa käytettyjä merkkejä, vaan ainoastaan länsimaissa yleisimmät merkit (Unicode-merkistöistä kontrollikoodit, Basic Latin ja Latin-1 Supplement, eli Unicode-arvoon 255 asti), ja se korvaa tuntemattomat merkit symbolilla "~". 
 
 ## Ohjelman yleisrakenne ja toiminta
+Ohjelma on tehty Javalla gradle-projektina.
+
 Ohjelma on jaettu neljään pakkaukseen: Tiedonpakkaus, Tiedonpakkaus.domain, Tiedonpakkaus.ui ja Tiedonpakkaus.util. Tiedonpakkaus-luokassa on ohjelman käynnistävä Main-luokka. Ui-pakkaus sisältää käyttöliittymän. Util-pakkauksessa on ohjelman suorituskykyä testaava luokka. Varsinainen tiedon pakkaamisen ja purkamisen toiminnallisuus on koottu domain-pakkaukseen. Pakkauksessa on omat luokkansa tiedostojen lukemiselle ja tallentamiselle, ja tiedon pakkaamisen ja purkamisen tekevät metodit ovat kummallekin pakkausalgoritmille omissa luokissaan.
 
 Pakkaamisen suorittaminen aloitetaan Compressor-luokassa, joka lukee pakattavan tiedoston sisällön merkkijonoksi ja välittää sen parametrina valitun algoritmin mukaisen luokan encode-metodille. Pakkausalgoritmi palauttaa pakatun tekstin Compressor-luokalle tavutaulukkona, jonka tavut luokka seuraavaksi tallettaa sille osoitettuun tiedostoon. 
@@ -25,9 +27,7 @@ Huffmanin koodauksessa puumalli on tallennettava pakatun tekstin yhteyteen, jott
 
 Teksti puolestaan pakataan puuta apuna käyttäen. Puun avulla muodostetaan ensin hakemisto merkeille sekä niihin johtaville 0- ja 1-merkeistä koostuville poluille, jotka pakatussa tekstissä kuvaavat merkkiä. Puu käydään jälleen rekursiivisesti läpi, ja vasemmalle kulkiessa lisätään polkuun 0 ja oikealle kulkiessa 1. Lehteen eli lapsettomaan solmuun saavuttaessa hakemistoon tallennetaan tämän solmun merkki ja siihen johtanut polku. 
 
-Seuraavaksi pakattava teksti käydään läpi hakemistoa apuna käyttäen, ja talletetaan bittimerkkijonoksi, jossa tekstin merkit on korvattu niitä kuvaavilla bittipoluilla. 
-
-Lopuksi puun ja tekstin bittijonot yhdistetään, ja niihin yhdistetään ylimääräisiä 0-bittejä, joiden avulla merkkijono saadaan tasan tavuihin jaettavan pituiseksi. Merkkijonon alkuun talletetaan ylimääräisten nollien lukumäärä ja tieto puun bittijonon pituudesta. 
+Seuraavaksi pakattava teksti käydään läpi hakemistoa apuna käyttäen, ja talletetaan bittimerkkijonoksi, jossa tekstin merkit on korvattu niitä kuvaavilla bittipoluilla. Lopuksi puun ja tekstin bittijonot yhdistetään, ja niihin yhdistetään ylimääräisiä 0-bittejä, joiden avulla merkkijono saadaan tasan tavuihin jaettavan pituiseksi. Merkkijonon alkuun talletetaan ylimääräisten nollien lukumäärä ja tieto puun bittijonon pituudesta. 
 
 Pakattua tiedostoa purkaessa puun ja tekstin bittijonot erotetaan toisistaan. Puun bitit puretaan takaisin puuesitykseksi, ja tekstin bitit muunnetaan takaisin merkeiksi kulkemalla puussa joko vasemmalle tai oikealle bitin arvon mukaan, kunnes saavutaan lapsettomaan solmuun, josta saadaan tekstiin lisättävä merkki. 
 
@@ -40,15 +40,21 @@ Lempel-Ziv-Welchin algoritmin hakemisto on tässä ohjelmassa toteutettu Javan h
 
 Lisäksi ohjelma käyttää tekstiä pakattavaan muotoon muokatessaan ja tavuista takaisin tekstiksi palauttaessaan merkkijonoa (String ja StringBuilder) ja tavutaulukkoa (byte[]). Pakattavat, tekstimuotoiset tiedostot luetaan Javan BufferedReaderilla, joka on kääritty FileReaderin ympärille, ja tiedostot tallennetaan tavuina Javan BufferedOutputStreamilla, joka on puolestaan kääritty FileOutputStreamin ympärille. Purettavat, tavumuotoiset tiedostot luetaan Javan Files-luokan readaAllBytes-metodilla, ja purettu merkkijonomuotoinen teksti tallennetaan tiedostoon Javan BufferedWriterilla, joka on kääritty FileWriterin ympärille. 
 
-## Saavutetut aikavaativuudet 
+## Saavutetut aika- ja tilavaativuudet 
 Algoritmien pseudokoodeista Huffmanin koodauksen aikavaativuus on O(n log n), ja Lempel-Ziv-Welch toimii ajassa O(n). 
 
-LZW:ssä teksti käydään niin pakatessa kuin purkaessa läpi vain kertaalleen, muuttaen merkkejä koodeiksi ja lisäten niitä sanakirjaan sitä mukaa kun uusia merkkiyhdistelmiä tulee tekstissä vastaan. Seuraavaksi koodilista käydään läpi ja muutetaan bittijonoksi, joka puolestaan käydään läpi ja talletetaan tavutaulukoksi, joka edelleen käydään läpi ja tallennetaan tiedostoon. Purkamisessa käydään läpi samat askeleet mutta vastakkaiseen suuntaan. Kaikkien toimien aikavaativuus on O(n). 
+LZW:ssä niin pakatessa kuin purettaessa käydään läpi erilaisia syötteitä, jolloin aikavaativuus on O(n). 
 
-Huffmanin koodauksessa puu muodostetaan minimikeon avulla. Alkioiden lisääminen ja pienimpien alkioiden poistaminen keosta on aikavaativuudeltaan O(log n) ja keon järjestäminen O(n log n). 
+Huffmanin koodauksessa pakkaamisessa käytettävä puu muodostetaan minimikeon avulla. Alkioiden lisääminen ja pienimpien alkioiden poistaminen keosta on aikavaativuudeltaan O(log n) ja keon järjestäminen O(n log n). Purkaminen on syötteiden läpikäyntiä, ja sen aikavaativuus on O(n).
 
-## Suorituskyky- ja O-analyysivertailu 
-Täydentyy
+Kummankin algoritmin tilavaativuus on O(n).
+
+## Suorituskykyvertailu 
+Algoritmien suorituskykyä testattiin suorituskykytestein, joiden tulokset ovat testausdokumentissa [suorituskyky-kappaleessa](/dokumentaatio/testausdokumentti.md#suorituskyky). 
+
+Testien perusteella Huffman pakkaa pienet tiedostot hieman paremmin kuin LZW, mutta noin neljästä kilotavusta suurempiin tiedostoihin LZW pakkasi tiedot huomattavasti pienempään tilaan.
+
+Aikavertailun osalta testien mukaan LZW on hitaampi pakkaamaan kuin Huffman, vaikka sen aikavaativuus onkin pienempi. Purkamisnopeudessa algoritmien välillä ei ollut suurta eroa, kun katsotaan purettavan, eli jo pakatun, tiedoston kokoa. Koska LZW onnistui pakkaamaan suuret tiedostot Huffmania paremmin, oli Huffmanilla kuitenkin isoissa alkuperäistiedostoissa myöskin isompi tiedosto purettavana. Näin ollen alkuperäisen tiedoston koon mukaan vertaillessa LZW hoiti purkamisen nopeammin kuin Huffman. 
 
 ## Työn mahdolliset puutteet ja parannusehdotukset 
 Lempel-Ziv-Welchin algoritmissa luodaan ensin sanakirjan pohja määrätylle joukolle Unicode-merkkejä, ja algoritmi ei tunnista muita pakattavassa tekstissä olevia merkkejä oikein. Koska ohjelman halutaan toimivan tehokkaasti ja pakkaavan tiedon mahdollisimman pieneen tilaan, eli sisältämään mahdollisimman vähän bittejä, ei sanakirjaan kannata sisällyttää tarpeettoman suurta määrää merkkejä. Tämä ei johdu siitä, että sanakirja tallennettaisiin pakatun tiedon osana ja se kannattaisi siksi pitää pienenä, vaan siitä että sanakirjan alkukoko määrittää sen, mistä kokonaisluvusta alkaen aletaan viitata tekstissä toistuviin merkkijonoihin, ja mitä pienempänä luvut pysyvät, sitä pienempiä ovat myös niitä kuvaavat bittijonot. Tämä sanakirjan aiheuttama rajoite rajoittaa algoritmin toimintaa, jos alkuperäisteksti sisältää näitä tunnistamattomia merkkejä, sillä ohjelma ei kykene myöskään purkamaan niitä alkuperäisiä merkkejä vastaaviksi. 
@@ -56,8 +62,6 @@ Lempel-Ziv-Welchin algoritmissa luodaan ensin sanakirjan pohja määrätylle jou
 Vastaava rajoite on Huffmanin koodauksessa, sillä tekstin mukana tallennettava puumalli sisältää kertaalleen kaikkien tekstissä esiintyvien merkkien unicode-arvot määrämittaisena bittijonona, eikä puun bittijonoesitystä kannata tarpeettomasti pidentää. 
 
 Tältä osin ohjelmaa voisi parantaa esim. niin, että käyttäjä voisi pakkausta käynnistäessään valita, mitkä Unicode-merkistöt hän haluaa ottaa mukaan. Tämä kuitenkin vaatisi käyttäjää perehtymään etukäteen niin merkistöihin kuin myös pakattavien tiedostojen sisältöön, jotta hän varmasti sisällyttäisi ohjelmaan kaikki tarvittavat merkistöt. Lempel-Ziv-Welchin kohdalla voisi vaihtoehtoisesti luoda sanakirjan pohjan käymällä teksti ensin läpi kertaalleen lisäten kaikki siinä olevat yksittäiset merkit sanakirjaan, ja sitten vasta ryhtyä luomaan koodilistaa tämän sanakirjan pohjalta käymällä teksti uudelleen läpi. Tällöin pitäisi kuitenkin tallettaa pakatun tekstin lisäksi myös yksittäiset merkit sisältävä sanakirja, joka jälleen vie tilaa, mutta saattaisi silti johtaa pienempään lopputulokseen esimerkiksi jos pakattava teksti ei sisällä isoa joukkoa eri merkkejä. 
-
-Ohjelman nopeutta puolestaan voisi lisätä tehokkaammilla rakenteilla. Esimerkiksi kummassakin algoritmissa käytetään HashMapia jonkin tiedon tallettamiseen ja hakemiseen, eikä se ole siihen tehokkain ratkaisu. 
 
 
 ## Lähteet 
