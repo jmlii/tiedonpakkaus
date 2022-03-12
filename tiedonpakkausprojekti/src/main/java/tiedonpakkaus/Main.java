@@ -3,6 +3,9 @@ package tiedonpakkaus;
 import java.io.IOException;
 import tiedonpakkaus.ui.UserInterface;
 
+/**
+ * Ohjelman Main-luokka.
+ */
 public class Main {
 
     /**

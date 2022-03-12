@@ -13,12 +13,13 @@ public class Decompressor {
      
     /**
      * Purkaa pakatun tiedoston tekstitiedostoksi
+     * @param algorithm käyttäjän ilmoittama pakkausalgoritmi
      * @param pathInput käyttäjän osoittama purettavan tiedoston osoite
      * @param pathOutput käyttäjän antama osoite puretulle tiedostolle
      * @return puretun tiedoston osoite
      * @throws IOException 
      */
-    public String decompress(String decompressor, String pathInput, String pathOutput) 
+    public String decompress(String algorithm, String pathInput, String pathOutput) 
             throws IOException {
         
         LZW lzw = new LZW(); 
@@ -32,9 +33,9 @@ public class Decompressor {
         String text = "";
         
         try {
-            if (decompressor.equals("LZW")) { 
+            if (algorithm.equals("LZW")) { 
                 text = lzw.decode(bytes);
-            } else if (decompressor.equals("Huffman")) {
+            } else if (algorithm.equals("Huffman")) {
                 text = h.decode(bytes);
             } else {
                 throw new IllegalArgumentException("Haluttua menetelmää ei tunnistettu.");

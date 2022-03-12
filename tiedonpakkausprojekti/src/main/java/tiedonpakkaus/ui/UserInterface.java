@@ -6,6 +6,9 @@ import tiedonpakkaus.domain.Compressor;
 import tiedonpakkaus.domain.Decompressor;
 import tiedonpakkaus.util.PerformanceTester;
 
+/**
+ * Käyttöliittymä.
+ */
 public class UserInterface {
         
     private String[] commandDescriptions = {
@@ -26,6 +29,7 @@ public class UserInterface {
     
     /**
      * Ohjelman käynnistys.
+     * @throws java.io.IOException
      */
     public void start() throws IOException {
         
@@ -42,6 +46,7 @@ public class UserInterface {
             } else if (input.equals("3")) {
                 runPerformanceTests();                
             } else if (input.equals("4")) {
+                System.out.println("Ohjelma suljetaan.");
                 System.exit(0);
             } else {
                 System.out.println("Valitse toiminto 1, 2, 3 tai 4");
@@ -151,7 +156,7 @@ public class UserInterface {
      */
     private String askAlgorithm() {
         while (true) {
-            System.out.println("Pakkausmenetelmä: L = Lempel-Ziv-Welch, H = Huffman.");
+            System.out.println("Pakkausmenetelmä: L = Lempel-Ziv-Welch, H = Huffman");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("L")) {
                 return "LZW";

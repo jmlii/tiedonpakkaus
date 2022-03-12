@@ -13,13 +13,13 @@ public class Compressor {
     
     /**
      * Lukee tiedoston ja pakkaa sen tekstin pienemmäksi tiedostoksi.
-     * @param compressor käyttäjän valitsema pakkausalgoritmi
+     * @param algorithm käyttäjän valitsema pakkausalgoritmi
      * @param pathInput käyttäjän osoittaman pakattavan tiedoston osoite
      * @param pathOutput käyttäjän antama osoite pakatulle tiedostolle
      * @return pakatun tiedoston osoite
      * @throws java.io.IOException jos tiedostoa ei löydy tai siihen ei päästä käsiksi
      */
-    public String compress(String compressor, String pathInput, String pathOutput) 
+    public String compress(String algorithm, String pathInput, String pathOutput) 
             throws IOException  {
         LZW lzw = new LZW();
         Huffman h = new Huffman();
@@ -37,9 +37,9 @@ public class Compressor {
         byte[] bytes;
         
         try {
-            if (compressor.equals("LZW")) { 
+            if (algorithm.equals("LZW")) { 
                 bytes = lzw.encode(text);
-            } else if (compressor.equals("Huffman")) {
+            } else if (algorithm.equals("Huffman")) {
                 bytes = h.encode(text);
             } else {
                 throw new IllegalArgumentException("Haluttua pakkausmenetelmää ei tunnistettu.");

@@ -67,7 +67,7 @@ public class Huffman {
     }
     
     /**
-     * Muodostaa Huffmanin koodin mukaisen puun minimikeko-rakenteeseen
+     * Muodostaa Huffmanin koodin mukaisen puun minimikeko-rakennetta apuna käyttäen
      * @param frequencies hakemisto, jossa merkit ja niiden esiintymiskerrat
      * @return puun juuri (aloitussolmu)
      */

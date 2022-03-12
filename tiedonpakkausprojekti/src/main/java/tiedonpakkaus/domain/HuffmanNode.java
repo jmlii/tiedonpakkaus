@@ -36,7 +36,7 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
     /**
      * Vertailee kahden solmun esiintymistiheyksiä
      * @param otherNode vertailun toinen solmu
-     * @return 
+     * @return positiivinen, jos tämän esiintymislkm on suurempi kuin toisen solmun
      */
     @Override
     public int compareTo(HuffmanNode otherNode) {
