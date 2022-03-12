@@ -190,3 +190,10 @@ Ohjelma suljetaan päävalikossa komennolla 4.
 
 ## Testitiedostot
 Tiedonpakkausprojekti-kansion (eli gradle-projektin) files-kansiossa on useita tiedostoja, joita voi käyttää ohjelman käytön testaamisessa ja suorituskykytestien ajamisessa. Kansiossa on esim. tyhjä tiedosto emptyfile.txt ja satunnaista tekstisisältöä sisältävä tekstitiedosto f.txt. Lisäksi etenkin suorituskykytestien ajamista varten kansiossa on 16 määräkokoista tiedostoa, 64-tavuisesta 2,1-megatavuiseen. 
+
+## Javadoc
+Javadocin voi generoida tiedonpakkausprojekti-kansion juuressa komennolla
+```
+gradle javadoc
+```
+Javadocia voi tarkastella avaamalla selaimella tiedosto build/docs/javadoc/index.html.
