@@ -78,7 +78,7 @@ Huffmanin koodauksessa pakatun tiedoston kokoa kasvattaa pakatun tekstin mukana 
 
 ![pakkaustehokkuus](/dokumentaatio/kuvat/kuva_pakkaustehokkuus.png)
 
-Kumpikin algoritmi suoriutui kaikilla tiedostoilla niin pakkaamisesta kuin purkamisesta alle sekunnissa. LZW pakkasi isot tiedostot huomattavasti hitaammin kuin Huffman, joka suoriutui melko nopeasti kaikissa testitiedostoissa. Isojen tiedostojen purkamisesta LZW puolestaan suoriutui hieman nopeammin kuin Huffman. 
+Kumpikin algoritmi suoriutui kaikilla tiedostoilla niin pakkaamisesta kuin purkamisesta alle sekunnissa. LZW pakkasi isot tiedostot huomattavasti hitaammin kuin Huffman, joka suoriutui melko nopeasti kaikissa testitiedostoissa. Isojen alkuperäistiedostojen purkamisesta LZW puolestaan suoriutui hieman nopeammin kuin Huffman. On kuitenkin huomattava, että Huffman ei pystynyt pakkaamaan isoja tiedostoja yhtä pieniksi kuin LZW, ja jos katsotaan tiedostojen pakattua kokoa, eli sitä jota purkaja käsittelee, niin algoritmit hoitivat purkamisen suurin piirtein yhtä nopeasti.
 
 ![pakkausaika](/dokumentaatio/kuvat/kuva_pakkausaika.png) 
 ![purkuaika](/dokumentaatio/kuvat/kuva_purkuaika.png)
