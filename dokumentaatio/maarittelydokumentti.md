@@ -4,14 +4,14 @@ Projektissa tutkitaan tiedon tiivistämistä. Työssä keskitytään tekstimuoto
 Harjoitustyössä toteutetaan kaksi pakkausalgoritmia, Huffman ja Lempel Ziv, sekä vertaillaan niiden suoriutumista keskenään. Toteutettavat ohjelmat pystyvät sekä pakkaamaan että palauttamaan pakatun tekstin alkuperäiseen muotoonsa. Tavoitteena on, että pakattuna tekstin koko olisi noin 40-60 % alkuperäisestä koosta. 
 
 ## Toteutettavat algoritmit ja tietorakenteet
-Toteutettavat algoritmit ovat Huffman ja Lempel Ziv, jotka ovat tunnettuja ja suosittuja häviöttömiä pakkausmenetelmiä. 
+Toteutettavat algoritmit ovat Huffman ja Lempel Ziv, jotka ovat tunnettuja ja suosittuja häviöttömiä pakkausmenetelmiä. Lempel Zivin algoritmista käytetään Lempel–Ziv–Welch-toteutusta.
 
 Huffmanin koodaus käyttää tietorakenteina binääripuuta ja kekoa. Huffmanin koodauksen aikavaativuus on O(n log n). 
 
-Lempelin ja Zivin algoritmissa luodaan hakemisto, joka voi olla rakenteeltaan esimerkiksi hajautustaulu tai hakupuu. Se toimii ajassa O(n). 
+Lempelin-Ziv-Welchin algoritmissa luodaan hakemisto, joka voi olla rakenteeltaan esimerkiksi hajautustaulu tai hakupuu. Se toimii ajassa O(n). 
 
 ## Syötteet
-Ohjelmalle annetaan syötteeksi jokin teksti. Tuotoksena on lista, jossa teksti on pakattu kokonaisluvuiksi. Pakattu teksti voidaan myös palauttaa alkuperäiseen muotoonsa. 
+Ohjelmalle annetaan syötteeksi jokin tiedosto, jonka sisältö luetaan tekstiksi. Lempel-Ziv-Welchin algoritmissa tekstistä muodostetaan lista, jossa teksti on pakattu kokonaisluvuiksi. Huffmanin algoritmissa tekstistä muodostetaan puurakenne ja sen avulla tekstin merkeistä muodostetaan pakattu bittimerkkijono. Lopullisena tuotoksena kummassakin on tiedosto, jossa pakatut rakenteet on tallennettu bittimuotoista merkkijonoa apuna käyttäen tavuiksi. Huffmanin koodauksessa pakattu tiedosto sisältää myös puurakenteen. Pakattu tiedosto voidaan myös palauttaa alkuperäiseen muotoonsa tekstitiedostoksi. 
 
 ## Työn kielet
 Ohjelma toteutetaan java-ohjelmointikielellä. Dokumentaation kieli on suomi.  
